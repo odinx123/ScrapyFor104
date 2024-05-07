@@ -33,7 +33,7 @@ class TestforstockinfoSpider(scrapy.Spider):
         new_element_locator = (By.CLASS_NAME, 'waterFall_item')
         elements = driver.find_elements(*new_element_locator)
         
-        page_size = 3
+        page_size = 0
         for i in range(page_size):
             # 滾動到頁面底部
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -43,8 +43,6 @@ class TestforstockinfoSpider(scrapy.Spider):
                 lambda driver: len(driver.find_elements(*new_element_locator)) > num_loaded_elements
             )
             elements = driver.find_elements(*new_element_locator)
-
-        time.sleep(1)
 
         # elements_div = driver.find_elements(By.CLASS_NAME, 'waterFall_item')
         for element in elements:
