@@ -68,6 +68,13 @@ SELENIUM_DRIVER_ARGUMENTS = ['--incognito', '--headless'] # change it to ['--hea
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 # 數字小的優先0-1000
+
+SQL_HOST = 'localhost'
+SQL_DATABASE = 'testForStockInfo'
+SQL_TABLE = 'stockInfo'
+SQL_USER = 'root'
+SQL_PASSWORD = '9879'
+
 ITEM_PIPELINES = {
    # "scrapyFor104.pipelines.Scrapyfor104Pipeline": 300,
    "scrapyFor104.pipelines.StockInfoPipeline": 300,
