@@ -139,5 +139,5 @@ if __name__ == "__main__":
     print(jobs)
 
 
-    job_info = job104_spider.get_job('71gqf')
-    print(job_info)
+    # job_info = job104_spider.get_job('71gqf')
+    # print(job_info)

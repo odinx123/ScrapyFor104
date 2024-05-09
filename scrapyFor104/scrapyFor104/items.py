@@ -8,8 +8,14 @@ import scrapy
 
 class Scrapyfor104Item(scrapy.Item):
     # define the fields for your item here like:
-    url = scrapy.Field()
-    content = scrapy.Field()
+    name = scrapy.Field()
+    salary = scrapy.Field()
+    Job_Category = scrapy.Field()
+    update_time = scrapy.Field()
+    exp = scrapy.Field()
+    address = scrapy.Field()
+    edu = scrapy.Field()
+
     # pass
 
 class StockInfoItem(scrapy.Item):

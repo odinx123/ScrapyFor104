@@ -1,0 +1,5 @@
+CREATE DATABASE `job104`;
+
+CREATE TABLE `job`(
+
+);

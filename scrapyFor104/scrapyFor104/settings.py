@@ -57,7 +57,7 @@ DOWNLOADER_MIDDLEWARES = {
   
 SELENIUM_DRIVER_NAME = 'chrome'
 # '--incognito' 無痕 、 '--headless' 不顯示browser
-SELENIUM_DRIVER_ARGUMENTS = ['--incognito', '--headless'] # change it to ['--headless'] run in headless mode
+SELENIUM_DRIVER_ARGUMENTS = ['--incognito', '--headless', '--window-size=1024x768'] # change it to ['--headless'] run in headless mode
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -76,8 +76,8 @@ SQL_USER = 'root'
 SQL_PASSWORD = '9879'
 
 ITEM_PIPELINES = {
-   # "scrapyFor104.pipelines.Scrapyfor104Pipeline": 300,
-   "scrapyFor104.pipelines.StockInfoPipeline": 300,
+   "scrapyFor104.pipelines.Scrapyfor104Pipeline": 300,
+#    "scrapyFor104.pipelines.StockInfoPipeline": 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

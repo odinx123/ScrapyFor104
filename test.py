@@ -3,36 +3,47 @@ from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 import time
+from bs4 import BeautifulSoup
+import requests
+import pprint
+import re
 
-chrome_options = ChromeOptions()
-# 使用無介面瀏覽模式！！
-chrome_options.add_argument('--headless')
-# 使用無痕模式
-chrome_options.add_argument('--incognito')
-chrome_options.add_argument('--lang=en_US.UTF-8')
+# chrome_options = ChromeOptions()
+# # 使用無介面瀏覽模式！！
+# chrome_options.add_argument('--headless')
+# chrome_options.add_argument('--window-size=1024x768')
+# # 使用無痕模式
+# chrome_options.add_argument('--incognito')
+# chrome_options.add_argument('--lang=en_US.UTF-8')
 
-with Chrome(options=chrome_options) as driver:
-    #your code inside this indent
-    url ='https://baike.baidu.com/wikitag/taglist?tagId=62991'
-    driver.get(url)
+# with Chrome(options=chrome_options) as driver:
+#     #your code inside this indent
+#     # https://static.104.com.tw/category-tool/json/Area.json地址網址
+#     # https://static.104.com.tw/category-tool/json/JobCat.json職務類別
+#     url ='https://www.104.com.tw/job/7uttg?jobsource=hotjob_chr'
+#     driver.get(url)
 
-    driver.maximize_window()
-    time.sleep(2)
-
+#     time.sleep(1)
+# #app > div > div > div.job-header > div.position-fixed.job-header__fixed.w-100.bg-white.job-header__cont > div > div > div.job-header__title
+#     new_element_locator = (By.CSS_SELECTOR,
+#                            '.ml-3.t4.text-gray-darker > span')
+#     element = driver.find_element(*new_element_locator)
     
-    new_element_locator = (By.CLASS_NAME, 'waterFall_item')
-    elements = driver.find_elements(*new_element_locator)
-    
-    page_size = 3
-    for i in range(page_size):
-        # 滾動到頁面底部
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        
-        num_loaded_elements = len(elements)
-        WebDriverWait(driver, 10).until(
-            lambda driver: len(driver.find_elements(*new_element_locator)) > num_loaded_elements
-        )
-        elements = driver.find_elements(*new_element_locator)
+#     print(element.get_attribute('title')[:-2])
+def getHTMLText(url, head=None):
+    proxies = {'http':'http://localhost','https':'http://localhost'}
+    r = requests.get(url, headers=head, proxies=proxies)
+    return r.text
+
+if __name__ == '__main__':
+    cafile = 'D:\SoftWare\Anaconda\envs\scrapyFor104\Lib\site-packages\certifi\cacert.pem' # http://curl.haxx.se/ca/cacert.pem
+    head = {
+                'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                'Referer': 'https://www.104.com.tw/'
+            }
+    html = requests.get('http://static.104.com.tw/category-tool/json/JobCat.json')
 
 
-    print('長度', len(elements))
+    response = re.findall(r'"no":"(\d{10})"', html.text)
+
+    pprint.pp(type(response[0]))
