@@ -69,11 +69,12 @@ SELENIUM_DRIVER_ARGUMENTS = ['--incognito', '--headless', '--window-size=1024x76
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 # 數字小的優先0-1000
 
-SQL_HOST = 'localhost'
-SQL_DATABASE = 'testForStockInfo'
-SQL_TABLE = 'stockInfo'
 SQL_USER = 'root'
+SQL_HOST = 'localhost'
 SQL_PASSWORD = '9879'
+
+SQL_JOB104DATABASE = 'job104'
+SQL_JOB104TABLE = 'job'
 
 ITEM_PIPELINES = {
    "scrapyFor104.pipelines.Scrapyfor104Pipeline": 300,

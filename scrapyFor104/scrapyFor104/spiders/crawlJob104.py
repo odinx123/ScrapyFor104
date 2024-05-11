@@ -27,22 +27,26 @@ class Crawljob104Spider(scrapy.Spider):
         html_text = response.body.decode('utf-8')
         no_list = re.findall(r'"no":"(\d{10})"', html_text)
         
-        page_size = 1
-        for no in no_list:
+        page_size = 150
+        for i, no in enumerate(no_list):
+            if no[-2:] == '00': continue
+            # if i >= 3: break  # for test
             for page in range(1, page_size+1):
                 url = f'https://www.104.com.tw/jobs/search/?jobcat={no}&page={page}'
-                yield SeleniumRequest(url=url,
-                                      headers=self.head,
-                                      callback=self.parseEveryPage,
-                                     )
+                yield scrapy.Request(url=url,
+                                     headers=self.head,
+                                     callback=self.parseEveryPage,
+                                    )
 
     def parseEveryPage(self, response):
-        item = Scrapyfor104Item()
-
         soup = BeautifulSoup(response.body, 'html.parser')
-        target_items = soup.select('.b-block--top-bord.job-list-item.b-clearfix.js-job-item:not(.js-job-item--recommend)')
 
-        item['Job_Category'] = re.search(r'「(.*?)」', response.body.decode('utf-8')).group(1)
+        if len(soup.select('.b-center.b-txt--center > p[class=b-tit]')) > 0:
+            yield None
+
+        item = Scrapyfor104Item()
+        target_items = soup.select('.b-block--top-bord.job-list-item.b-clearfix.js-job-item:not(.js-job-item--recommend)')
+        item['job_category'] = re.search(r'「(.*?)」', response.body.decode('utf-8')).group(1)
         for job in target_items:
             item['name'] = job['data-job-name']
             # [address, exp, edu]
@@ -53,4 +57,4 @@ class Crawljob104Spider(scrapy.Spider):
             item['update_time'] = job.find(class_='b-tit__date').text.strip()
             item['salary'] = job.find(class_='b-tag--default').text
 
-        yield item
+            yield item
