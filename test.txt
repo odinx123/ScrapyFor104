@@ -1,10 +1,1 @@
-2001001002
-2001001001
-
-https://www.104.com.tw/jobs/search/?ro=0&jobcat=2001001001&page=2
-
-https://www.104.com.tw/jobs/search/?jobcat=2018002004
-
-b-center.b-txt--center
-
-target_items = soup.select('.b-block--top-bord.job-list-item.b-clearfix.js-job-item:not(.js-job-item--recommend)')
+pip freeze > requirements.txt

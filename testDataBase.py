@@ -1,4 +1,5 @@
 import mysql.connector
+import pprint
 
 connection = mysql.connector.connect(host='localhost',
                                      user='root',
@@ -10,13 +11,17 @@ connection = mysql.connector.connect(host='localhost',
 cursor = connection.cursor()
 
 # 執行指令
-cursor.execute('USE testforstockinfo')
+cursor.execute('USE `job104`')
+
+# cursor.execute('delete from job')
+# connection.commit()
 
 # 顯示所有資料庫
-cursor.execute('SELECT * FROM stockinfo limit 1')
+cursor.execute('select * from `job` order by `update_time`')
 records = cursor.fetchall()
 
-print(records)
+pprint.pp(records)
+
 
 # 結束使用
 cursor.close()
