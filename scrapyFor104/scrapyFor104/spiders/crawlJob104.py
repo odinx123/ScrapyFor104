@@ -1,4 +1,3 @@
-from scrapy_selenium import SeleniumRequest
 from scrapyFor104.items import Scrapyfor104Item
 from bs4 import BeautifulSoup
 import scrapy
