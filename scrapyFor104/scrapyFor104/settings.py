@@ -69,9 +69,11 @@ DOWNLOAD_DELAY = 2.5
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 # 數字小的優先0-1000
 
-SQL_USER = 'root'
-SQL_HOST = 'localhost'
-SQL_PASSWORD = '9879'
+import os
+
+SQL_USER = os.environ["USER_NAME"]
+SQL_HOST = os.environ["HOST"]
+SQL_PASSWORD = os.environ["PASSWD"]
 
 SQL_JOB104DATABASE = 'job104'
 SQL_JOB104TABLE = 'job'

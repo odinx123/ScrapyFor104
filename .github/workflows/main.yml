@@ -26,8 +26,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install --upgrade --force-reinstall lxml
+          pip install --upgrade --force-reinstall cffi
 
       - name: execute scrapy
+        env:
+          HOST: ${{ secrets.HOST }}
+          USER_NAME: ${{ secrets.USER_NAME }}
+          PASSWD: ${{ secrets.PASSWD }}
         run: |
           cd scrapyFor104
           scrapy crawl crawlJob104
