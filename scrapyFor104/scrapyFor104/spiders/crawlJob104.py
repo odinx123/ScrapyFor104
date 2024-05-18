@@ -2,8 +2,7 @@ from scrapyFor104.items import Scrapyfor104Item
 from bs4 import BeautifulSoup
 import scrapy
 import re
-import requests
-
+# import requests
 
 class Crawljob104Spider(scrapy.Spider):
     name = "crawlJob104"
@@ -27,17 +26,17 @@ class Crawljob104Spider(scrapy.Spider):
         html_text = response.body.decode('utf-8')
         no_list = re.findall(r'"no":"(\d{10})"', html_text)
         
-        page_size = 5
+        page_size = 2
         for i, no in enumerate(no_list):
             if no[-2:] == '00': continue
             # if i >= 3: break  # for test
             for page in range(1, page_size+1):
                 url = f'https://www.104.com.tw/jobs/search/?jobcat={no}&page={page}'
 
-                response = requests.get(url, headers=self.head)
-                soup = BeautifulSoup(response.content, 'html.parser')
-                if len(soup.select('.b-center.b-txt--center > p[class=b-tit]')) > 0:
-                    break
+                # response = requests.get(url, headers=self.head)
+                # soup = BeautifulSoup(response.content, 'html.parser')
+                # if len(soup.select('.b-center.b-txt--center > p[class=b-tit]')) > 0:
+                #     break
 
                 yield scrapy.Request(url=url,
                                      headers=self.head,
