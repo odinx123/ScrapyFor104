@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
-  schedule:
-    - cron: '0 16 * * *' # At 00:00 on Monday UTC time
+  # pull_request:
+  #   branches:
+  #     - main
+  # schedule:
+  #   - cron: '0 16 * * *'
 
 jobs:
   build:
@@ -43,6 +43,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git add -A
           git diff-index --quiet HEAD || (git commit -a -m "updated files" --allow-empty)
+      
       - name: push changes
         uses: ad-m/github-push-action@v0.6.0
         with:
