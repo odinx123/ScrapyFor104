@@ -27,7 +27,7 @@ class Crawljob104Spider(scrapy.Spider):
         html_text = response.body.decode('utf-8')
         no_list = re.findall(r'"no":"(\d{10})"', html_text)
         
-        page_size = 150
+        page_size = 5
         for i, no in enumerate(no_list):
             if no[-2:] == '00': continue
             # if i >= 3: break  # for test
