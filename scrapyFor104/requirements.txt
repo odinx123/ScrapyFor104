@@ -1,6 +1,4 @@
 scrapy
 mysql-connector-python
 BeautifulSoup4
-lxml
-pip install --upgrade --force-reinstall lxml
-pip install --upgrade --force-reinstall cffi
+Twisted==22.10.0
