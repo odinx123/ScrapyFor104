@@ -2,6 +2,7 @@ from scrapyFor104.items import Scrapyfor104Item
 from bs4 import BeautifulSoup
 import scrapy
 import re
+import requests
 
 
 class Crawljob104Spider(scrapy.Spider):
@@ -32,6 +33,12 @@ class Crawljob104Spider(scrapy.Spider):
             # if i >= 3: break  # for test
             for page in range(1, page_size+1):
                 url = f'https://www.104.com.tw/jobs/search/?jobcat={no}&page={page}'
+
+                response = requests.get(url, headers=self.head)
+                soup = BeautifulSoup(response.content, 'html.parser')
+                if len(soup.select('.b-center.b-txt--center > p[class=b-tit]')) > 0:
+                    break
+
                 yield scrapy.Request(url=url,
                                      headers=self.head,
                                      callback=self.parseEveryPage,
@@ -41,19 +48,21 @@ class Crawljob104Spider(scrapy.Spider):
         soup = BeautifulSoup(response.body, 'html.parser')
 
         if len(soup.select('.b-center.b-txt--center > p[class=b-tit]')) > 0:
-            yield None
+            return
 
         item = Scrapyfor104Item()
         target_items = soup.select('.b-block--top-bord.job-list-item.b-clearfix.js-job-item:not(.js-job-item--recommend)')
-        item['job_category'] = re.search(r'「(.*?)」', response.body.decode('utf-8')).group(1)
+        item['job_category'] = re.search(r'「(.*?)」', response.body.decode('utf-8')).group(1).strip()
         for job in target_items:
-            item['name'] = job['data-job-name']
+            # primary key (name, company)
+            item['name'] = job['data-job-name'].strip()
+            item['company'] = job['data-cust-name'].strip()
             # [address, exp, edu]
             temp = job.find('ul', class_='b-list-inline b-clearfix job-list-intro b-content').find_all('li')
-            item['address'] = temp[0].text
-            item['exp'] = temp[1].text
-            item['edu'] = temp[2].text
+            item['address'] = temp[0].text.strip()
+            item['exp'] = temp[1].text.strip()
+            item['edu'] = temp[2].text.strip()
             item['update_time'] = job.find(class_='b-tit__date').text.strip()
-            item['salary'] = job.find(class_='b-tag--default').text
+            item['salary'] = job.find(class_='b-tag--default').text.strip()
 
             yield item

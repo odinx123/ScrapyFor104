@@ -50,14 +50,14 @@ DOWNLOAD_DELAY = 2.5
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-DOWNLOADER_MIDDLEWARES = {
-   "scrapyFor104.middlewares.Scrapyfor104DownloaderMiddleware": 543,
-   "scrapy_selenium.SeleniumMiddleware": 800
-}
+# DOWNLOADER_MIDDLEWARES = {
+#    "scrapyFor104.middlewares.Scrapyfor104DownloaderMiddleware": 543,
+#    "scrapy_selenium.SeleniumMiddleware": 800
+# }
   
-SELENIUM_DRIVER_NAME = 'chrome'
+# SELENIUM_DRIVER_NAME = 'chrome'
 # '--incognito' 無痕 、 '--headless' 不顯示browser
-SELENIUM_DRIVER_ARGUMENTS = ['--incognito', '--headless', '--window-size=1024x768'] # change it to ['--headless'] run in headless mode
+# SELENIUM_DRIVER_ARGUMENTS = ['--incognito', '--headless', '--window-size=1024x768'] # change it to ['--headless'] run in headless mode
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html

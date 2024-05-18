@@ -56,12 +56,13 @@ class Scrapyfor104Pipeline:
             exp = item['exp']
             address = item['address']
             edu = item['edu']
+            company = item['company']
             # print(name, salary, job_category, update_time, exp, address, edu)
             self.cursor.execute(f'''
-                                INSERT INTO `{self.table}`
-                                (`name`, `salary`, `job_category`, `update_time`, `exp`, `address`, `edu`)
+                                INSERT IGNORE INTO `{self.table}`
+                                (`name`, `salary`, `job_category`, `update_time`, `exp`, `address`, `edu`, `company`)
                                 VALUES
-                                ('{name}', '{salary}', '{job_category}', '{update_time}', '{exp}', '{address}', '{edu}')
+                                ('{name}', '{salary}', '{job_category}', '{update_time}', '{exp}', '{address}', '{edu}', '{company}')
                                 '''
             )
 

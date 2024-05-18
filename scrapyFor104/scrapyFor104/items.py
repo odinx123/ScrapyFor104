@@ -15,12 +15,4 @@ class Scrapyfor104Item(scrapy.Item):
     exp = scrapy.Field()
     address = scrapy.Field()
     edu = scrapy.Field()
-
-    # pass
-
-class StockInfoItem(scrapy.Item):
-    # define the fields for your item here like:
-    title = scrapy.Field()
-    url = scrapy.Field()
-    content = scrapy.Field()
-    # pass
+    company = scrapy.Field()
