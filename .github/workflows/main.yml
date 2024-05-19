@@ -1,11 +1,11 @@
 name: run main.py
 
 on:
-  schedule:
-    - cron: '0 16 * * *'
-  # push:
-  #   branches:
-  #     - test
+  # schedule:
+  #   - cron: '0 16 * * *'
+  push:
+    branches:
+      - test
   # pull_request:
   #   branches:
   #     - main

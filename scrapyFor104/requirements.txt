@@ -1,4 +1,0 @@
-scrapy
-mysql-connector-python
-BeautifulSoup4
-Twisted==22.10.0
