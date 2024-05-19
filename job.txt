@@ -1,0 +1,203 @@
+{
+    "corpImageRight": {
+        "corpImageRight": {
+            "imageUrl": "",
+            "link": ""
+        }
+    },
+    "header": {
+        "corpImageTop": {
+            "imageUrl": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/custintroduce/image2.jpg?v=20240517153132",      
+            "link": ""
+        },
+        "jobName": "【月薪最高45K】內外場儲備主管 NARA Thai Cuisine 米其林推薦泰式料理餐廳 台北忠孝SOGO店【月休10天】",
+        "appearDate": "2024/05/13",
+        "custName": "金田餐飲股份有限公司",
+        "custUrl": "https://www.104.com.tw/company/cqwml0w",
+        "applyDate": "",
+        "analysisType": 1,
+        "analysisUrl": "//www.104.com.tw/jobs/apply/analysis/5vr9y",
+        "isSaved": false,
+        "isApplied": false
+    },
+    "contact": {
+        "hrName": "人力資源部",
+        "email": "",
+        "visit": "",
+        "phone": [],
+        "other": "",
+        "reply": "",
+        "suggestExam": false
+    },
+    "environmentPic": {
+        "environmentPic": [
+            {
+                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/s_962627717426582419.jpg?v=20240517153132",
+                "link": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/l_962627717426582419.jpg?v=20240517153132",  
+                "description": "【NARA Thai Cuisine】\n"
+            },
+            {
+                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/s_962627717427152935.jpg?v=20240517153132",
+                "link": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/l_962627717427152935.jpg?v=20240517153132",  
+                "description": "【Lady nara】\n"
+            },
+            {
+                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/s_962627717426582418.jpg?v=20240517153132",
+                "link": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/l_962627717426582418.jpg?v=20240517153132",  
+                "description": "【Sarabeth’s】\n"
+            },
+            {
+                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/s_962627717427152934.jpg?v=20240517153132",
+                "link": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/l_962627717427152934.jpg?v=20240517153132",  
+                "description": "【東京純豆腐 Tokyo Sundubu】\n"
+            },
+            {
+                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/s_962627717426582417.jpg?v=20240517153132",
+                "link": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/l_962627717426582417.jpg?v=20240517153132",  
+                "description": "【卡布里喬莎 Capricciosa】\n"
+            },
+            {
+                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/s_962627717426582420.jpg?v=20240517153132",
+                "link": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/l_962627717426582420.jpg?v=20240517153132",  
+                "description": "【晴木千層豬排 Kimukatsu】\n"
+            }
+        ],
+        "corpImageBottom": {
+            "imageUrl": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/custintroduce/image1.jpg?v=20240517153132",      
+            "link": ""
+        }
+    },
+    "condition": {
+        "acceptRole": {
+            "role": [
+                {
+                    "code": 64,
+                    "description": "原住民"
+                }
+            ],
+            "disRole": {
+                "needHandicapCompendium": false,
+                "disability": []
+            }
+        },
+        "workExp": "2年以上",
+        "edu": "高中以上",
+        "major": [],
+        "language": [],
+        "localLanguage": [],
+        "specialty": [],
+        "skill": [
+            {
+                "code": "11002001002",
+                "description": "預算編製與成本控管"
+            },
+            {
+                "code": "11002003001",
+                "description": "工作任務╱業績項目分配"
+            },
+            {
+                "code": "11002003002",
+                "description": "培育人員職涯發展"
+            },
+            {
+                "code": "11002003003",
+                "description": "業績目標達成"
+            },
+            {
+                "code": "11002003004",
+                "description": "督導人員工作績效"
+            },
+            {
+                "code": "11002004004",
+                "description": "部門績效目標管理"
+            },
+            {
+                "code": "11002004007",
+                "description": "賣場／門市營運計畫與管理"
+            },
+            {
+                "code": "11008003001",
+                "description": "門市餐飲管理"
+            }
+        ],
+        "certificate": [],
+        "driverLicense": [],
+        "other": "1.具服務熱忱及有志投入餐飲服務者。 \n2.擁有正面積極的心、願接受公司培訓計畫。\n\n***此職務受訓地點，將會依照公司安排做配置（以雙北市為主）。***"
+    },
+    "welfare": {
+        "tag": [
+            "年終獎金",
+            "三節獎金/禮品",
+            "特殊節日獎金禮品",
+            "零食櫃",
+            "咖啡吧",
+            "生日假",
+            "結婚禮金",
+            "國內旅遊",
+            "國外旅遊",
+            "部門聚餐",
+            "慶生會",
+            "員工優惠",
+            "配發公務機"
+        ],
+        "welfare": "❮完善保障❯\n◎ 勞保、健保、勞退提撥金。\n\n❮優渥獎金❯\n◎ 每月 - 全勤獎金、績效獎金、假日業績達成獎金。\n◎ 節慶 - 年終獎金、節慶禮金(券)、生日禮券、婚喪喜慶、生育禮金。\n◎ 其他 - 激勵獎金、新開店獎金。\n\n❮休假制度❯\n◎ 門市排班制 (正職月休10天、兼職彈性排班)。\n◎ 特休假、女性生理假、家庭照顧假、陪產檢及陪產假、傷病假、喪假、天災假，均依勞基法規定給假。\n◎ 國定假日出勤，兼職人員雙倍薪資。\n\n❮其他福 利❯\n◎ 生日禮券1000元、生日假、慶生派對。\n◎ 享免費員工餐、提供員工制服與送洗服務。\n◎ 主管治裝費全額補助、結婚禮金、國內(外)員工旅遊。\n◎  員工與親朋好友用餐八折優惠。\n◎ 春酒聚餐及抽獎。\n◎ 住宿津貼：外縣市調派至雙北市者補助$10,000/月，雙北市調派至外縣市者補助$8,000/月。\n\n❮優質訓練❯\n◎ 一年6次的全天外訓專業課程。\n◎ 完善的訓練制度，包含餐廳經營、安全衛生知識、各工作站標準作業、服務技巧、訓練技巧、值班主管培訓、與財務分析課程。\n◎ 進階式考核升遷制度。\n\n【計時人員：享福又給利】 \n◎ 快樂享津貼 - 國定假日出勤雙薪。 \n◎ 一起享獎金 - 每月績效獎金、新開店獎金、假日業績達成獎金。 \n◎ 相聚享歡樂 - 生日禮券、不定期歡聚活動、春酒活動。\n\n如果您熱愛享受美食、喜歡與人互動、正向思考，並且對餐廳經營有熱情，歡迎加入金田餐飲的菁英團隊。",
+        "legalTag": [
+            "週休二日",
+            "家庭照顧假",
+            "勞保",
+            "健保",
+            "陪產假",
+            "產假",
+            "特別休假",
+            "女性生理假",
+            "勞退提撥金",
+            "產檢假"
+        ]
+    },
+    "jobDetail": {
+        "jobDescription": "❮排班方式❯\n✦ 月休10天。\n✦ 採排班制。\n\n❮工作內容❯\n外場儲備主管▸\n1. 門市經營管理、各項成本控管。 \n2. 具備營 業績效達成能力，配合公司策略達成目標。 \n3. 維持餐點與服務品質。 \n4. 規劃並執行完善的教育訓練。 \n5. 經營良好顧客關係。 \n\n內場儲備主管▸\n1. 門市經營管理、各項成本控管。\n2. 具備營業績效達成能力，配合公司策略達成目標。\n3. 遵照標準SOP流程製作餐點。\n4. 衛生安全管理。\n5. 規劃並執行完善的教育訓練。\n\n❮金田福利❯\n1. 享勞保、健保、勞退金提撥。\n2. 享全勤獎金、月績效獎金、假日業績達成獎金。\n3. 享年終獎金、年節禮金(券)。\n4. 享生日禮券1000元、生日假、生日派對。\n5. 享免費員工餐食。\n6. 享金田餐飲品牌用餐八折優惠（限平日，無次數限制）。",
+        "jobCategory": [
+            {
+                "code": "2001001002",
+                "description": "儲備幹部"
+            },
+            {
+                "code": "2006002002",
+                "description": "飯店或餐廳主管"
+            }
+        ],
+        "salary": "月薪38,000~45,000元",
+        "salaryMin": 38000,
+        "salaryMax": 45000,
+        "salaryType": 50,
+        "jobType": 1,
+        "workType": [],
+        "addressNo": "6001001005",
+        "addressRegion": "台北市大安區",
+        "addressArea": "台北市",
+        "addressDetail": "忠孝東路四段45號11樓 (近捷運忠孝復興站)",
+        "industryArea": "",
+        "longitude": "121.5448197",
+        "latitude": "25.0419878",
+        "manageResp": "管理13人以上",
+        "businessTrip": "無需出差外派",
+        "workPeriod": "日班/晚班/假日班，需輪班",
+        "vacationPolicy": "依公司規定",
+        "startWorkingDay": "不限",
+        "hireType": 0,
+        "delegatedRecruit": "",
+        "needEmp": "1~2人",
+        "landmark": "距捷運忠孝復興站約110公尺",
+        "remoteWork": null
+    },
+    "switch": "on",
+    "custLogo": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/logo.jpg?v=20240517153132",
+    "postalCode": "106",
+    "closeDate": "",
+    "industry": "餐館業",
+    "custNo": "27748310000",
+    "reportUrl": "https://www.104.com.tw/feedback?category=2&custName=%E9%87%91%E7%94%B0%E9%A4%90%E9%A3%B2%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8&jobName=%E3%80%90%E6%9C%88%E8%96%AA%E6%9C%80%E9%AB%9845K%E3%80%91%E5%85%A7%E5%A4%96%E5%A0%B4%E5%84%B2%E5%82%99%E4%B8%BB%E7%AE%A1+NARA+Thai+Cuisine+%E7%B1%B3%E5%85%B6%E6%9E%97%E6%8E%A8%E8%96%A6%E6%B3%B0%E5%BC%8F%E6%96%99%E7%90%86%E9%A4%90%E5%BB%B3+%E5%8F%B0%E5%8C%97%E5%BF%A0%E5%AD%9DSOGO%E5%BA%97%E3%80%90%E6%9C%88%E4%BC%9110%E5%A4%A9%E3%80%91",
+    "industryNo": "1016002001",
+    "employees": "800人",
+    "chinaCorp": false
+}

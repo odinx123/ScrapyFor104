@@ -2,6 +2,7 @@ from scrapyFor104.items import Scrapyfor104Item
 from bs4 import BeautifulSoup
 import scrapy
 import re
+import json
 # import requests
 
 class Crawljob104Spider(scrapy.Spider):
@@ -33,11 +34,6 @@ class Crawljob104Spider(scrapy.Spider):
             for page in range(1, page_size+1):
                 url = f'https://www.104.com.tw/jobs/search/?jobcat={no}&page={page}'
 
-                # response = requests.get(url, headers=self.head)
-                # soup = BeautifulSoup(response.content, 'html.parser')
-                # if len(soup.select('.b-center.b-txt--center > p[class=b-tit]')) > 0:
-                #     break
-
                 yield scrapy.Request(url=url,
                                      headers=self.head,
                                      callback=self.parseEveryPage,
@@ -49,19 +45,62 @@ class Crawljob104Spider(scrapy.Spider):
         if len(soup.select('.b-center.b-txt--center > p[class=b-tit]')) > 0:
             return
 
-        item = Scrapyfor104Item()
-        target_items = soup.select('.b-block--top-bord.job-list-item.b-clearfix.js-job-item:not(.js-job-item--recommend)')
-        item['job_category'] = re.search(r'「(.*?)」', response.body.decode('utf-8')).group(1).strip()
-        for job in target_items:
-            # primary key (name, company)
-            item['name'] = job['data-job-name'].strip()
-            item['company'] = job['data-cust-name'].strip()
-            # [address, exp, edu]
-            temp = job.find('ul', class_='b-list-inline b-clearfix job-list-intro b-content').find_all('li')
-            item['address'] = temp[0].text.strip()
-            item['exp'] = temp[1].text.strip()
-            item['edu'] = temp[2].text.strip()
-            item['update_time'] = job.find(class_='b-tit__date').text.strip()
-            item['salary'] = job.find(class_='b-tag--default').text.strip()
+        targets =  soup.find_all(attrs={'data-qa-id':'jobSeachResultTitle'})
+        
+        re_compile = re.compile(r'/job/([^?]+)')
+        for tag in targets:
+            href = tag['href']
+            job_id = re_compile.search(href).group(1)
+            
+            """取得職缺詳細資料"""
+            url = f'https://www.104.com.tw/job/ajax/content/{job_id}'
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.92 Safari/537.36',
+                'Referer': f'https://www.104.com.tw/job/{job_id}'
+            }
+            
+            yield scrapy.Request(url=url,
+                                 headers=headers,
+                                 callback=self.parseEveryJob,
+                                )
+    
+    def parseEveryJob(self, response):
+        self.log(f'Parsing job details from {response.url}')
 
-            yield item
+        item = Scrapyfor104Item()
+        
+        job_data = json.loads(response.text)['data']
+
+        header = job_data['header']
+        item['job_title'] = header['jobName']
+        item['update_time'] = header['appearDate']
+        item['company'] = header['custName']
+
+        condition = job_data['condition']
+
+        item['exp'] = condition['workExp']
+        item['edu'] = condition['edu']
+
+        sk_list = []
+        for sk in condition['skill']:
+            sk_list.append(sk['description'])
+        item['skill'] = sk_list
+
+        tools = []
+        for t in condition['specialty']:
+            tools.append(t['description'])
+        item['specialty_tool'] = tools
+
+        detail = job_data['jobDetail']
+
+        categories = []
+        for c in detail['jobCategory']:
+            categories.append(c['description'])
+        item['category_name'] = categories
+
+        item['salary'] = detail['salary']
+        item['address'] = detail['addressRegion'] + detail['addressDetail']
+
+        item['industry'] = job_data['industry']
+
+        yield item

@@ -1,1 +1,54 @@
 pip freeze > requirements.txt
+
+Jobs (工作) 表格: 包含每個工作機會的基本信息。
+job_id (工作ID，主鍵)
+title (工作標題)
+salary (薪水)
+company_id (公司ID，外鍵關聯到Companies表格)
+
+Companies (公司) 表格: 包含公司信息。
+company_id (公司ID，主鍵)
+name (公司名稱)
+address (公司地址)
+industry (行業)
+
+Categories (職務類別) 表格: 包含職務類別。
+category_id (類別ID，主鍵)
+name (類別名稱)
+
+Skills (技能) 表格: 包含技能信息。
+skill_id (技能ID，主鍵)
+name (技能名稱)
+
+Tools (工具) 表格: 包含工具信息。
+tool_id (工具ID，主鍵)
+name (工具名稱)
+
+Education (學歷) 表格: 包含學歷信息。
+education_id (學歷ID，主鍵)
+level (學歷級別，例如高中、大學、碩士、博士等)
+
+Experience (經歷) 表格: 包含工作經歷信息。
+experience_id (經歷ID，主鍵)
+years (工作年限)
+description (具體工作經歷描述)
+
+Job_Category (工作和職務類別關聯) 表格: 建立工作和職務類別之間的多對多關係。
+job_id (工作ID，外鍵關聯到Jobs表格)
+category_id (類別ID，外鍵關聯到Categories表格)
+
+Job_Skill (工作和技能關聯) 表格: 建立工作和技能之間的多對多關係。
+job_id (工作ID，外鍵關聯到Jobs表格)
+skill_id (技能ID，外鍵關聯到Skills表格)
+
+Job_Tool (工作和工具關聯) 表格: 建立工作和工具之間的多對多關係。
+job_id (工作ID，外鍵關聯到Jobs表格)
+tool_id (工具ID，外鍵關聯到Tools表格)
+
+Job_Education (工作和學歷關聯) 表格: 建立工作和學歷之間的多對多關係。
+job_id (工作ID，外鍵關聯到Jobs表格)
+education_id (學歷ID，外鍵關聯到Education表格)
+
+Job_Experience (工作和經歷關聯) 表格: 建立工作和經歷之間的多對多關係。
+job_id (工作ID，外鍵關聯到Jobs表格)
+experience_id (經歷ID，外鍵關聯到Experience表格)

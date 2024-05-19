@@ -7,12 +7,25 @@ import scrapy
 
 
 class Scrapyfor104Item(scrapy.Item):
-    # define the fields for your item here like:
-    name = scrapy.Field()
-    salary = scrapy.Field()
-    job_category = scrapy.Field()
-    update_time = scrapy.Field()
-    exp = scrapy.Field()
-    address = scrapy.Field()
-    edu = scrapy.Field()
-    company = scrapy.Field()
+    # for job
+    job_title = scrapy.Field()  # ok
+    salary = scrapy.Field()  # ok
+    address = scrapy.Field()  # ok
+    industry = scrapy.Field()
+    update_time = scrapy.Field()  # ok
+    company = scrapy.Field()  # ok
+
+    # for education
+    edu = scrapy.Field()  # ok
+
+    # for experience
+    exp = scrapy.Field()  # ok
+
+    # for skill
+    skill = scrapy.Field()  # ok
+
+    # for category
+    category_name = scrapy.Field()  # ok
+
+    # for tool
+    specialty_tool = scrapy.Field()
