@@ -4,13 +4,9 @@ Jobs (工作) 表格: 包含每個工作機會的基本信息。
 job_id (工作ID，主鍵)
 title (工作標題)
 salary (薪水)
-company_id (公司ID，外鍵關聯到Companies表格)
-
-Companies (公司) 表格: 包含公司信息。
-company_id (公司ID，主鍵)
-name (公司名稱)
-address (公司地址)
-industry (行業)
+address
+industry
+update_time
 
 Categories (職務類別) 表格: 包含職務類別。
 category_id (類別ID，主鍵)

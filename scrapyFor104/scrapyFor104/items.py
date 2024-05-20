@@ -9,11 +9,11 @@ import scrapy
 class Scrapyfor104Item(scrapy.Item):
     # for job
     job_title = scrapy.Field()  # ok
+    company = scrapy.Field()  # ok
     salary = scrapy.Field()  # ok
     address = scrapy.Field()  # ok
     industry = scrapy.Field()
     update_time = scrapy.Field()  # ok
-    company = scrapy.Field()  # ok
 
     # for education
     edu = scrapy.Field()  # ok
@@ -28,4 +28,4 @@ class Scrapyfor104Item(scrapy.Item):
     category_name = scrapy.Field()  # ok
 
     # for tool
-    specialty_tool = scrapy.Field()
+    specialty_tool = scrapy.Field()  # ok

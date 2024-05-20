@@ -1,27 +1,27 @@
 {
     "corpImageRight": {
         "corpImageRight": {
-            "imageUrl": "",
-            "link": ""
+            "imageUrl": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/custintroduce/image3.jpg?v=20240510094854",      
+            "link": "https://www.facebook.com/qnaperslife/"
         }
     },
     "header": {
         "corpImageTop": {
-            "imageUrl": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/custintroduce/image2.jpg?v=20240517153132",      
+            "imageUrl": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/custintroduce/image2.jpg?v=20240510094854",      
             "link": ""
         },
-        "jobName": "【月薪最高45K】內外場儲備主管 NARA Thai Cuisine 米其林推薦泰式料理餐廳 台北忠孝SOGO店【月休10天】",
-        "appearDate": "2024/05/13",
-        "custName": "金田餐飲股份有限公司",
-        "custUrl": "https://www.104.com.tw/company/cqwml0w",
+        "jobName": "【學期 & 暑期實習】軟體自動化測試實習生(高雄)",
+        "appearDate": "2024/05/17",
+        "custName": "QNAP_威聯通科技股份有限公司",
+        "custUrl": "https://www.104.com.tw/company/112ce5w8",
         "applyDate": "",
-        "analysisType": 1,
-        "analysisUrl": "//www.104.com.tw/jobs/apply/analysis/5vr9y",
+        "analysisType": 3,
+        "analysisUrl": "//www.104.com.tw/jobs/apply/analysis/83ix3",
         "isSaved": false,
         "isApplied": false
     },
     "contact": {
-        "hrName": "人力資源部",
+        "hrName": "鄭先生",
         "email": "",
         "visit": "",
         "phone": [],
@@ -32,47 +32,75 @@
     "environmentPic": {
         "environmentPic": [
             {
-                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/s_962627717426582419.jpg?v=20240517153132",
-                "link": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/l_962627717426582419.jpg?v=20240517153132",  
-                "description": "【NARA Thai Cuisine】\n"
+                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/s_893204585648875915.jpg?v=20240510094854",
+                "link": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/l_893204585648875915.jpg?v=20240510094854",  
+                "description": "QNAP 20周年永續運動會"
             },
             {
-                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/s_962627717427152935.jpg?v=20240517153132",
-                "link": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/l_962627717427152935.jpg?v=20240517153132",  
-                "description": "【Lady nara】\n"
+                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/s_893204585648875916.jpg?v=20240510094854",
+                "link": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/l_893204585648875916.jpg?v=20240510094854",  
+                "description": "QNAP 運動會獎金PK賽"
             },
             {
-                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/s_962627717426582418.jpg?v=20240517153132",
-                "link": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/l_962627717426582418.jpg?v=20240517153132",  
-                "description": "【Sarabeth’s】\n"
+                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/s_965262117529595033.jpg?v=20240510094854",
+                "link": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/l_965262117529595033.jpg?v=20240510094854",  
+                "description": "QNAP春酒晚宴"
             },
             {
-                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/s_962627717427152934.jpg?v=20240517153132",
-                "link": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/l_962627717427152934.jpg?v=20240517153132",  
-                "description": "【東京純豆腐 Tokyo Sundubu】\n"
+                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/s_965180511416353266.jpg?v=20240510094854",
+                "link": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/l_965180511416353266.jpg?v=20240510094854",  
+                "description": "Team Building漆彈活動"
             },
             {
-                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/s_962627717426582417.jpg?v=20240517153132",
-                "link": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/l_962627717426582417.jpg?v=20240517153132",  
-                "description": "【卡布里喬莎 Capricciosa】\n"
+                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/s_890328564411744241.jpg?v=20240510094854",
+                "link": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/l_890328564411744241.jpg?v=20240510094854",  
+                "description": "QNAP家庭日活動"
             },
             {
-                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/s_962627717426582420.jpg?v=20240517153132",
-                "link": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/env/l_962627717426582420.jpg?v=20240517153132",  
-                "description": "【晴木千層豬排 Kimukatsu】\n"
+                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/s_893122914373104909.jpg?v=20240510094854",
+                "link": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/l_893122914373104909.jpg?v=20240510094854",  
+                "description": "QNAP主管團隊"
+            },
+            {
+                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/s_893122914373104910.jpg?v=20240510094854",
+                "link": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/l_893122914373104910.jpg?v=20240510094854",  
+                "description": "同仁教育訓練"
+            },
+            {
+                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/s_965180511421941855.jpg?v=20240510094854",
+                "link": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/l_965180511421941855.jpg?v=20240510094854",  
+                "description": "社團活動-拳擊有氧"
+            },
+            {
+                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/s_965180511416357979.jpg?v=20240510094854",
+                "link": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/l_965180511416357979.jpg?v=20240510094854",  
+                "description": "社團活動-籃球社"
+            },
+            {
+                "thumbnailLink": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/s_962627717425267850.jpg?v=20240510094854",
+                "link": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/env/l_962627717425267850.jpg?v=20240510094854",  
+                "description": "社團活動-羽球社"
             }
         ],
         "corpImageBottom": {
-            "imageUrl": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/custintroduce/image1.jpg?v=20240517153132",      
-            "link": ""
+            "imageUrl": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/custintroduce/image1.jpg?v=20240510094854",      
+            "link": "http://www.qnap.com/cht/"
         }
     },
     "condition": {
         "acceptRole": {
             "role": [
                 {
-                    "code": 64,
-                    "description": "原住民"
+                    "code": 4,
+                    "description": "日間就讀中"
+                },
+                {
+                    "code": 8,
+                    "description": "夜間就讀中"
+                },
+                {
+                    "code": 1024,
+                    "description": "學生實習"
                 }
             ],
             "disRole": {
@@ -80,67 +108,74 @@
                 "disability": []
             }
         },
-        "workExp": "2年以上",
-        "edu": "高中以上",
-        "major": [],
-        "language": [],
-        "localLanguage": [],
-        "specialty": [],
-        "skill": [
+        "workExp": "不拘",
+        "edu": "大學、碩士",
+        "major": [
+            "資訊工程相關",
+            "電機電子工程相關",
+            "資訊管理相關"
+        ],
+        "language": [
             {
-                "code": "11002001002",
-                "description": "預算編製與成本控管"
-            },
-            {
-                "code": "11002003001",
-                "description": "工作任務╱業績項目分配"
-            },
-            {
-                "code": "11002003002",
-                "description": "培育人員職涯發展"
-            },
-            {
-                "code": "11002003003",
-                "description": "業績目標達成"
-            },
-            {
-                "code": "11002003004",
-                "description": "督導人員工作績效"
-            },
-            {
-                "code": "11002004004",
-                "description": "部門績效目標管理"
-            },
-            {
-                "code": "11002004007",
-                "description": "賣場／門市營運計畫與管理"
-            },
-            {
-                "code": "11008003001",
-                "description": "門市餐飲管理"
+                "code": 1,
+                "language": "英文",
+                "ability": "聽 /中等、說 /中等、讀 /中等、寫 /中等"
             }
         ],
+        "localLanguage": [],
+        "specialty": [
+            {
+                "code": "12001001007",
+                "description": "Linux"
+            },
+            {
+                "code": "12001002016",
+                "description": "Github"
+            },
+            {
+                "code": "12001002017",
+                "description": "Jenkins"
+            },
+            {
+                "code": "12001003010",
+                "description": "C++"
+            },
+            {
+                "code": "12001003045",
+                "description": "Python"
+            },
+            {
+                "code": "12001006017",
+                "description": "JavaScript"
+            }
+        ],
+        "skill": [],
         "certificate": [],
         "driverLicense": [],
-        "other": "1.具服務熱忱及有志投入餐飲服務者。 \n2.擁有正面積極的心、願接受公司培訓計畫。\n\n***此職務受訓地點，將會依照公司安排做配置（以雙北市為主）。***"
+        "other": ""
     },
     "welfare": {
         "tag": [
+            "員工紅利",
             "年終獎金",
             "三節獎金/禮品",
-            "特殊節日獎金禮品",
-            "零食櫃",
-            "咖啡吧",
+            "員工舒壓按摩",
             "生日假",
+            "新人假",
             "結婚禮金",
+            "生育津貼",
+            "旅遊補助",
+            "住院慰問金",
             "國內旅遊",
             "國外旅遊",
             "部門聚餐",
             "慶生會",
-            "員工優惠",
-            "配發公務機"
+            "社團活動",
+            "特約商店",
+            "優於勞基法特休",
+            "員工團體保險"
         ],
-        "welfare": "❮完善保障❯\n◎ 勞保、健保、勞退提撥金。\n\n❮優渥獎金❯\n◎ 每月 - 全勤獎金、績效獎金、假日業績達成獎金。\n◎ 節慶 - 年終獎金、節慶禮金(券)、生日禮券、婚喪喜慶、生育禮金。\n◎ 其他 - 激勵獎金、新開店獎金。\n\n❮休假制度❯\n◎ 門市排班制 (正職月休10天、兼職彈性排班)。\n◎ 特休假、女性生理假、家庭照顧假、陪產檢及陪產假、傷病假、喪假、天災假，均依勞基法規定給假。\n◎ 國定假日出勤，兼職人員雙倍薪資。\n\n❮其他福 利❯\n◎ 生日禮券1000元、生日假、慶生派對。\n◎ 享免費員工餐、提供員工制服與送洗服務。\n◎ 主管治裝費全額補助、結婚禮金、國內(外)員工旅遊。\n◎  員工與親朋好友用餐八折優惠。\n◎ 春酒聚餐及抽獎。\n◎ 住宿津貼：外縣市調派至雙北市者補助$10,000/月，雙北市調派至外縣市者補助$8,000/月。\n\n❮優質訓練❯\n◎ 一年6次的全天外訓專業課程。\n◎ 完善的訓練制度，包含餐廳經營、安全衛生知識、各工作站標準作業、服務技巧、訓練技巧、值班主管培訓、與財務分析課程。\n◎ 進階式考核升遷制度。\n\n【計時人員：享福又給利】 \n◎ 快樂享津貼 - 國定假日出勤雙薪。 \n◎ 一起享獎金 - 每月績效獎金、新開店獎金、假日業績達成獎金。 \n◎ 相聚享歡樂 - 生日禮券、不定期歡聚活動、春酒活動。\n\n如果您熱愛享受美食、喜歡與人互動、正向思考，並且對餐廳經營有熱情，歡迎加入金田餐飲的菁英團隊。",
+        "welfare": "░░░  優於法規的休假制度 │ 更有彈性的安排您的假期  ░░░ \n ❑ 當月壽星享有生日假\n ❑ 新人到職滿3個月享有3天新人假\n\n░░░   薪酬制度 │ 規劃健全且具競爭力的薪酬獎金制度  ░░░ \n ❑ 三節獎金\n ❑ 營運績效紅利\n ❑ 年度績效調薪\n ❑ 專案獎金，包括人才推薦獎金、研發專案獎 金、專利獎金\n\n░░░  工作環境與生活 │ 為您的身心靈健康把關  ░░░  \n ❑ 年度免費健康檢查、無痛腸胃鏡/心臟檢查補助及流感疫苗全額補助\n ❑ 每月提供醫師健康諮詢服務\n ❑ 免費視障舒壓按摩服務 \n ❑ 舉辦身心健康促進講座\n ❑ 提供代訂午餐的貼心服務 \n ❑ 年度部門Team Building活動/聚餐補助\n ❑ 低於市價的點心/飲料販賣機 (汐止總部/新生/新竹)\n ❑ 免費零食點心 (高雄)\n\n░░░  人才發展與成長 │ 給您多元的職涯發展與學習環境  ░░░  \n ❑ 提 供多元化的技術性/通識課程\n ❑ 公司內部技術分享與交流\n ❑ 外部教育訓練補助\n ❑ 雙軌制的職涯規劃\n\n░░░  多元的 QNAPer 福利活動 │ 工作之餘也要享受一下QNAPer專屬的休閒福利  ░░░  \n ❑ 每年生日、中秋節及端午節發放 Ticket Xpress 即享券\n ❑ 每年提供萬元現金旅遊補助與旅遊福利金，自主彈性安排\n ❑ 多元社團活動，包括羽球社、籃球社、拳擊有氧等\n ❑ 每季舉同仁慶生會\n ❑ 各類特約商家，及不定期舉辦試吃會以及企業優惠團購\n ❑ 同仁購機優惠\n ❑ 結婚、生育、住院及喪葬補助金\n\n░░░  保險規劃 │ 貼心的全面照護  ░░░  \n ❑ 員工團體保險，包括壽險、意外險、意外醫療險、住院醫療險、 癌症險\n ❑ 法定保險，包括勞工保險、健康保險、勞工退休金依法提撥\n ❑ 出差旅行平安保險與醫療險\n\n\n歡迎至QNAP官網 - 人才招募，進一步了解詳情 喔~ \nhttps://www.qnap.com/zh-tw/career/",
         "legalTag": [
             "週休二日",
             "家庭照顧假",
@@ -149,55 +184,65 @@
             "陪產假",
             "產假",
             "特別休假",
+            "育嬰留停",
             "女性生理假",
             "勞退提撥金",
-            "產檢假"
+            "產檢假",
+            "就業保險",
+            "員工體檢",
+            "職災保險"
         ]
     },
     "jobDetail": {
-        "jobDescription": "❮排班方式❯\n✦ 月休10天。\n✦ 採排班制。\n\n❮工作內容❯\n外場儲備主管▸\n1. 門市經營管理、各項成本控管。 \n2. 具備營 業績效達成能力，配合公司策略達成目標。 \n3. 維持餐點與服務品質。 \n4. 規劃並執行完善的教育訓練。 \n5. 經營良好顧客關係。 \n\n內場儲備主管▸\n1. 門市經營管理、各項成本控管。\n2. 具備營業績效達成能力，配合公司策略達成目標。\n3. 遵照標準SOP流程製作餐點。\n4. 衛生安全管理。\n5. 規劃並執行完善的教育訓練。\n\n❮金田福利❯\n1. 享勞保、健保、勞退金提撥。\n2. 享全勤獎金、月績效獎金、假日業績達成獎金。\n3. 享年終獎金、年節禮金(券)。\n4. 享生日禮券1000元、生日假、生日派對。\n5. 享免費員工餐食。\n6. 享金田餐飲品牌用餐八折優惠（限平日，無次數限制）。",
+        "jobDescription": "【請留意!!】應徵時請提供下列資訊:\n**請提供預計實習期間/每周可上班幾天。\n(無論暑期或學期實習，每周實習天數須至少三個工作天)。\n\n----\n看著自動產生費布納西數列的程式作業，擔心學校所學與業界所需有落差嗎?\n想修改Github上神人的專案卻不知從何下手嗎?\n網路 流傳文組轉職寫程式年薪大漲，又有人說程式寫得好要飯要到老，到底哪個才是真的?ChatGPT當道，嘴砲寫程式的時代似乎已經來臨，未來軟體工程師該何去何從? \n讀萬卷書不如行萬里路，我們歡迎好奇以上問題解答的你\n加入我們軟體研發實習生的行列!!\n\n在這裡你可以:\n- 熟悉QNAP產品與網路儲存知識，加 入私有雲端與虛擬化工作潮流\n- 了解何謂敏捷(Agile)軟體工程開發流程，理論與實務兼具\n- 體驗多種角色分工，深刻理解SWE (Software Engineer) / SET (Software Engineer in Test) / AE (Application Engineer) 有何不同\n- 探索生成式AI技術在軟體開發中的各種可能性 \n\n【實習生工作內容】: \n1.  依據產品設計需求，協助建立測試計畫及測試案例\n2. 協助SET使用自動化測試系統進行測試，並輔以手動測試彌補自動化無法涵蓋的部分\n3. 協助SWE開發/ 維護既有程式 API / UI\n4. 協助AE複製/分析客戶案例\n5. 其他主管交辦事項 \n\n【條件要求】: 技術方面無特別要求，我們反而更注重實習生的人格特質:\n1. 團隊合作、清晰有條理的報告及溝通能力 \n2. 具科學邏輯思維、追根究底的實驗精神 \n3. 對不同領域知識的好奇心與學習能力 \n\n不會Linux可以學 ，不會程式可以練\n但如果遇到問題只會埋頭苦幹，就錯失了跟資深同事偷學幾招的好機會囉! \n當然如果具備以下【技能或經驗】會更加分唷:\n1. 程式設計經驗 (C++ / Python / JavaScript)\n2. 知道Github or Gitlab在做甚麼\n3. 有Linux使用、管理經驗 \n4. 曾用ChatGPT / Github Co-polit / 或其他生成 式AI技術 完成過軟體功能或專案 \n\n【關於我們】: QNAP高雄軟體研發團隊致力於儲存產品開發與軟體測試自動化，將繁瑣的功能流程簡化為圖形化介面/程 式，節省客戶/同仁們寶貴的時間，在這裡每位Team member都能專注在程式開發與學習最新技術，同時又能享受下班後與家人相處的時光，work life balance!! \n我們講究合理有效率的敏捷開發流程(Agile)，並透過Jenkins + Gitflow + CI/CD持續整合與佈署，將原本痛苦的軟體發行變成如呼吸般自然而然。工作排程採用JIRA Kanban管理，均以視覺化呈現且公開透明。\n期待熱愛軟體開發的你加入!!\n",
         "jobCategory": [
             {
-                "code": "2001001002",
-                "description": "儲備幹部"
+                "code": "2009003007",
+                "description": "軟韌體測試工程師"
             },
             {
-                "code": "2006002002",
-                "description": "飯店或餐廳主管"
+                "code": "2002001011",
+                "description": "工讀生"
+            },
+            {
+                "code": "2007001004",
+                "description": "軟體工程師"
             }
         ],
-        "salary": "月薪38,000~45,000元",
-        "salaryMin": 38000,
-        "salaryMax": 45000,
-        "salaryType": 50,
-        "jobType": 1,
-        "workType": [],
-        "addressNo": "6001001005",
-        "addressRegion": "台北市大安區",
-        "addressArea": "台北市",
-        "addressDetail": "忠孝東路四段45號11樓 (近捷運忠孝復興站)",
+        "salary": "日薪1,500元以上",
+        "salaryMin": 1500,
+        "salaryMax": 9999999,
+        "salaryType": 40,
+        "jobType": 2,
+        "workType": [
+            "長期工讀"
+        ],
+        "addressNo": "6001016008",
+        "addressRegion": "高雄市三民區",
+        "addressArea": "高雄市",
+        "addressDetail": "博愛一路55號",
         "industryArea": "",
-        "longitude": "121.5448197",
-        "latitude": "25.0419878",
-        "manageResp": "管理13人以上",
-        "businessTrip": "無需出差外派",
-        "workPeriod": "日班/晚班/假日班，需輪班",
+        "longitude": "120.302637",
+        "latitude": "22.642798",
+        "manageResp": "",
+        "businessTrip": "",
+        "workPeriod": "日班，09:00-18:00 ; 09:30-18:30",
         "vacationPolicy": "依公司規定",
-        "startWorkingDay": "不限",
+        "startWorkingDay": "一個月內",
         "hireType": 0,
         "delegatedRecruit": "",
-        "needEmp": "1~2人",
-        "landmark": "距捷運忠孝復興站約110公尺",
+        "needEmp": "2人",
+        "landmark": "距捷運高雄車站約380公尺",
         "remoteWork": null
     },
     "switch": "on",
-    "custLogo": "https://static.104.com.tw/b_profile/cust_picture/0000/27748310000/logo.jpg?v=20240517153132",
-    "postalCode": "106",
+    "custLogo": "https://static.104.com.tw/b_profile/cust_picture/5000/80682695000/logo.gif?v=20240510094854",
+    "postalCode": "807",
     "closeDate": "",
-    "industry": "餐館業",
-    "custNo": "27748310000",
-    "reportUrl": "https://www.104.com.tw/feedback?category=2&custName=%E9%87%91%E7%94%B0%E9%A4%90%E9%A3%B2%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8&jobName=%E3%80%90%E6%9C%88%E8%96%AA%E6%9C%80%E9%AB%9845K%E3%80%91%E5%85%A7%E5%A4%96%E5%A0%B4%E5%84%B2%E5%82%99%E4%B8%BB%E7%AE%A1+NARA+Thai+Cuisine+%E7%B1%B3%E5%85%B6%E6%9E%97%E6%8E%A8%E8%96%A6%E6%B3%B0%E5%BC%8F%E6%96%99%E7%90%86%E9%A4%90%E5%BB%B3+%E5%8F%B0%E5%8C%97%E5%BF%A0%E5%AD%9DSOGO%E5%BA%97%E3%80%90%E6%9C%88%E4%BC%9110%E5%A4%A9%E3%80%91",
-    "industryNo": "1016002001",
-    "employees": "800人",
+    "industry": "電腦軟體服務業",
+    "custNo": "80682695000",
+    "reportUrl": "https://www.104.com.tw/feedback?category=2&custName=QNAP_%E5%A8%81%E8%81%AF%E9%80%9A%E7%A7%91%E6%8A%80%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8&jobName=%E3%80%90%E5%AD%B8%E6%9C%9F+%26+%E6%9A%91%E6%9C%9F%E5%AF%A6%E7%BF%92%E3%80%91%E8%BB%9F%E9%AB%94%E8%87%AA%E5%8B%95%E5%8C%96%E6%B8%AC%E8%A9%A6%E5%AF%A6%E7%BF%92%E7%94%9F%28%E9%AB%98%E9%9B%84%29",
+    "industryNo": "1001001002",
+    "employees": "1300人",
     "chinaCorp": false
 }

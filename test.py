@@ -18,7 +18,6 @@ def get_job(job_id):
     data = r.json()
     return data['data']
 
-
-job_info = get_job('5vr9y')
+job_info = get_job('83ix3')
 data = json.dumps(job_info, indent=4, ensure_ascii=False)
 print(data)

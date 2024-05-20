@@ -30,18 +30,33 @@ cursor.execute('USE `job104`')
 # cursor.execute('DROP TABLE job')
 # cursor.execute('DESCRIBE `job`')
 # cursor.execute('show tables')
-cursor.execute('select `name`, `company` FROM `job`')
-records = cursor.fetchall()
-# print(records)
+# cursor.execute('select `name`, `company` FROM `job`')
+# records = cursor.fetchall()
+# # print(records)
 
-exist = set()
-for t in records:
-    if t in exist:
-        print(t)
-    else:
-        exist.add(t)
-print('===================================')
-print(len(records), len(exist))
+# exist = set()
+# for t in records:
+#     if t in exist:
+#         print(t)
+#     else:
+#         exist.add(t)
+# print('===================================')
+# print(len(records), len(exist))
+
+# 暫時禁用外鍵檢查
+cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
+
+# 查詢所有表格名稱
+cursor.execute("SHOW TABLES;")
+tables = cursor.fetchall()
+
+# 生成並執行 DROP TABLE 語句
+for table in tables:
+    cursor.execute(f"DROP TABLE IF EXISTS `{table[0]}`;")
+
+# 重新啟用外鍵檢查
+cursor.execute("SET FOREIGN_KEY_CHECKS = 1;")
+
 
 connection.commit()
 
