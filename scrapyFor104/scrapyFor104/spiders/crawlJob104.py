@@ -27,9 +27,10 @@ class Crawljob104Spider(scrapy.Spider):
         html_text = response.body.decode('utf-8')
         no_list = re.findall(r'"no":"(\d{10})"', html_text)
         
-        page_size = 1
+        page_size = 150
         for i, no in enumerate(no_list):
             if no[-2:] == '00': continue
+            if no[0:4] != '2007': continue  # 只抓取資訊軟體相關職缺，因為全部抓太久了
             # if i >= 3: break  # for test
             for page in range(1, page_size+1):
                 url = f'https://www.104.com.tw/jobs/search/?jobcat={no}&page={page}'
