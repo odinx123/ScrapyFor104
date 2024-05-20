@@ -27,7 +27,7 @@ class Crawljob104Spider(scrapy.Spider):
         html_text = response.body.decode('utf-8')
         no_list = re.findall(r'"no":"(\d{10})"', html_text)
         
-        page_size = 2
+        page_size = 1
         for i, no in enumerate(no_list):
             if no[-2:] == '00': continue
             # if i >= 3: break  # for test
@@ -79,7 +79,7 @@ class Crawljob104Spider(scrapy.Spider):
         condition = job_data['condition']
 
         item['exp'] = condition['workExp']
-        item['edu'] = condition['edu']
+        item['edu'] = condition['edu'].split('、')
 
         sk_list = []
         for sk in condition['skill']:

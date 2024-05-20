@@ -78,11 +78,10 @@ SQL_HOST = 'localhost'
 SQL_PASSWORD = '9879'
 
 SQL_JOB104DATABASE = 'job104'
-SQL_JOB104TABLE = 'job'
 
-# ITEM_PIPELINES = {
-#    "scrapyFor104.pipelines.Scrapyfor104Pipeline": 300,
-# }
+ITEM_PIPELINES = {
+   "scrapyFor104.pipelines.Scrapyfor104Pipeline": 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
