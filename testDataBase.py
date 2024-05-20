@@ -43,22 +43,22 @@ cursor.execute('USE `job104`')
 # print('===================================')
 # print(len(records), len(exist))
 
-# 暫時禁用外鍵檢查
-cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
+query = '''
+                    SELECT * FROM job
+                    WHERE job_id IN (
+                        SELECT job_id FROM Job_Tool
+                        WHERE tool_id IN (
+                            SELECT tool_id FROM Tools
+                            WHERE specialty_tool = %s
+                        )
+                    )
+                '''
+cursor.execute(query, ('C++',))
+jobs = cursor.fetchall()
+print(jobs)
 
-# 查詢所有表格名稱
-cursor.execute("SHOW TABLES;")
-tables = cursor.fetchall()
 
-# 生成並執行 DROP TABLE 語句
-for table in tables:
-    cursor.execute(f"DROP TABLE IF EXISTS `{table[0]}`;")
-
-# 重新啟用外鍵檢查
-cursor.execute("SET FOREIGN_KEY_CHECKS = 1;")
-
-
-connection.commit()
+# connection.commit()
 
 
 # 結束使用

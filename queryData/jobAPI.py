@@ -309,22 +309,13 @@ class JobDatabase:
         return False
 
     # salary 找出所有工作 [min_salary - max_salary]
-    def get_jobs_by_salary(self, min_salary, max_salary):
-        if self.conn is not None:
-            try:
-                cursor = self.conn.cursor()
-                cursor.execute("SELECT * FROM job")
-                jobs = cursor.fetchall()
-                salary_jobs = []
-                for job in jobs:
-                    salary_range = self.convert_salary_to_range(job[3])
-                    if self.is_within_range(salary_range, min_salary, max_salary):
-                        salary_jobs.append(job)
-                return salary_jobs
-            except mysql.connector.Error as e:
-                print("Error retrieving data from MySQL:", e)
-        else:
-            print("Connection to MySQL not established.")
+    def get_jobs_by_salary(self, jobs, min_salary, max_salary):
+            salary_jobs = []
+            for job in jobs:
+                salary_range = self.convert_salary_to_range(job[3])
+                if self.is_within_range(salary_range, min_salary, max_salary):
+                    salary_jobs.append(job)
+            return salary_jobs
 
     # 得到所有salary
     def get_all_salaries(self):  # return 月薪範圍 [min, max] type=tuple
@@ -356,9 +347,104 @@ class JobDatabase:
         else:
             print("Connection to MySQL not established.")
 
+    # filter 找出所有工作
+    def get_jobs_by_filter(self, category=None, skill=None, experience=None, education=None, tool=None, days=None, min_salary=0, max_salary=INF):
+        if self.conn is not None:
+            try:
+                cursor = self.conn.cursor()
+                query = '''
+                    SELECT * FROM job
+                    WHERE 1=1
+                '''
+                params = []
+
+                if category:
+                    query += '''
+                        AND job_id IN (
+                            SELECT job_id FROM Job_Category
+                            WHERE category_id IN (
+                                SELECT category_id FROM Categories
+                                WHERE category_name = %s
+                            )
+                        )
+                    '''
+                    params.append(category)
+
+                if skill:
+                    query += '''
+                        AND job_id IN (
+                            SELECT job_id FROM Job_Skill
+                            WHERE skill_id IN (
+                                SELECT skill_id FROM Skills
+                                WHERE name = %s
+                            )
+                        )
+                    '''
+                    params.append(skill)
+
+                if experience:
+                    query += '''
+                        AND job_id IN (
+                            SELECT job_id FROM Job_Experience
+                            WHERE experience_id IN (
+                                SELECT experience_id FROM Experience
+                                WHERE experience = %s
+                            )
+                        )
+                    '''
+                    params.append(experience)
+
+                if education:
+                    query += '''
+                        AND job_id IN (
+                            SELECT job_id FROM Job_Education
+                            WHERE education_id IN (
+                                SELECT education_id FROM Education
+                                WHERE level = %s
+                            )
+                        )
+                    '''
+                    params.append(education)
+
+                if tool:
+                    query += '''
+                        AND job_id IN (
+                            SELECT job_id FROM Job_Tool
+                            WHERE tool_id IN (
+                                SELECT tool_id FROM Tools
+                                WHERE specialty_tool = %s
+                            )
+                        )
+                    '''
+                    params.append(tool)
+
+                if days is not None:
+                    query += ' AND update_time >= DATE_SUB(CURDATE(), INTERVAL %s DAY)'
+                    params.append(days)
+
+                cursor.execute(query, tuple(params))
+                jobs = cursor.fetchall()
+
+                # 處理薪水篩選
+                return self.get_jobs_by_salary(jobs, min_salary, max_salary)
+
+            except mysql.connector.Error as e:
+                print("Error retrieving data from MySQL:", e)
+        else:
+            print("Connection to MySQL not established.")
+
+def get_jobs_by_salary(self, jobs, min_salary=None, max_salary=None):
+    filtered_jobs = []
+    for job in jobs:
+        salary = job['salary']  # 假設 'salary' 是 jobs 裡的一個欄位
+        if (min_salary is None or salary >= min_salary) and (max_salary is None or salary <= max_salary):
+            filtered_jobs.append(job)
+    return filtered_jobs
+
 
 # 測試連接與獲取資料
 def main():
+    import pprint
     db = JobDatabase(
         host="localhost",
         username="root",
@@ -367,12 +453,11 @@ def main():
     )
     # print(db.get_jobs())
     # columns = db.convert_salary_to_range('待遇面議')
-    a = (INF,INF)
-    job = db.get_jobs_by_update_time(2)
-    # print(job)
-    job.sort(key=lambda x: x[6], reverse=True)
-    for j in job:
-        print(j[6], end=' ')
+    
+    print('skill', db.get_all_skills())
+    job = db.get_jobs_by_filter('後端工程師', None, None, None, None, 1, 0, 1000000)
+    
+    pprint.pp(job)
 
     # job = db.get_jobs_by_tool('Linux')
     # print("Jobs:", job)
