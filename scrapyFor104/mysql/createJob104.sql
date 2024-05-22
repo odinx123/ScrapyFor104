@@ -1,13 +1,14 @@
--- CREATE DATABASE `job104`;
+CREATE DATABASE `job104`;
 
 USE `job104`
 
 CREATE TABLE `job`(
     `job_id` INT AUTO_INCREMENT,
     `job_title` varchar(50),
-    `company` varchar(20),
-    `salary` varchar(20),
-    `address` varchar(20),
+    `company` varchar(35),
+    `salary_min` INT,
+    `salary_max` FLOAT,
+    `address` varchar(35),
     `industry` varchar(20),
     `update_time` DATE,
     PRIMARY KEY(`job_id`),

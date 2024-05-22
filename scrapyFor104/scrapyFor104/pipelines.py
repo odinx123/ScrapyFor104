@@ -8,6 +8,7 @@
 from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
 import mysql.connector
+import re
 
 class Scrapyfor104Pipeline:
     def __init__(self, host, user, password, database):
@@ -43,21 +44,54 @@ class Scrapyfor104Pipeline:
         # 關閉連線
         self.connection.close()
     
+    def convert_salary_to_range(self, salary):  # return 月薪範圍 [min, max] type=tuple
+        # 轉換各種薪資格式為月薪範圍 [min, max]
+        if '待遇面議' in salary:
+            return (0, 1.7976931348623157E+308)  # 表示全符合
+        
+        salary = salary.replace(',', '')  # 去除千分位符號
+
+        if '月薪' in salary:
+            if '以上' in salary:
+                min_salary = int(re.findall(r'\d+', salary)[0])
+                return (min_salary, 1.7976931348623157E+308)
+            else:
+                salary = tuple(re.findall(r'\d+', salary))
+                return salary
+        elif '年薪' in salary:
+            s = tuple(map(int, re.findall(r'\d+', salary)))
+            if '以上' in salary:
+                return (s[0] // 12, 1.7976931348623157E+308)
+            if len(s) == 1:
+                return (s[0] // 12,)
+            else:
+                return (s[0]//12, s[1]//12)
+        elif '時薪' in salary:
+            s = tuple(map(int, re.findall(r'\d+', salary)))
+            if '以上' in salary:
+                return (s[0] * 8 * 5 * 4, 1.7976931348623157E+308)
+            if len(s) == 1:
+                return (s[0] * 8 * 5 * 4,)
+            else:
+                return (s[0] * 8 * 5 * 4, s[1] * 8 * 5 * 4)
+
+        return (0, 0)
+
     def process_item(self, item, spider):
         try:
             # get the item data
             job_title = item['job_title']
             company = item['company']
-            salary = item['salary']
             address = item['address']
             industry = item['industry']
             update_time = item['update_time']
+            salary_min, salary_max = self.convert_salary_to_range(item['salary'])
 
             self.cursor.execute(f'''
                                 INSERT IGNORE INTO `job`
-                                (`job_title`, `company`, `salary`, `address`, `industry`, `update_time`)
+                                (`job_title`, `company`, `salary_min`, `salary_max`, `address`, `industry`, `update_time`)
                                 VALUES
-                                ('{job_title}', '{company}', '{salary}', '{address}', '{industry}', '{update_time}')
+                                ('{job_title}', '{company}', '{salary_min}', '{salary_max}', '{address}', '{industry}', '{update_time}')
                                 '''
             )
 

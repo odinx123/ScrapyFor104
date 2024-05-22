@@ -12,35 +12,42 @@ class Crawljob104Spider(scrapy.Spider):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
             'Referer': 'https://www.104.com.tw/jobs/search/'
         }
-
     def start_requests(self):
         # https://static.104.com.tw/category-tool/json/Area.json    地址網址
         # https://static.104.com.tw/category-tool/json/JobCat.json  職務類別
-        url = f"http://static.104.com.tw/category-tool/json/JobCat.json"
+        # 讀取本地的JSON文件
+        with open('category.json', 'r', encoding='utf-8') as file:
+            job_cat_data = json.load(file)
 
-        yield scrapy.Request(url=url,  # 先將所有職務類別抓入
-                             headers=self.head,
-                             callback=self.parse
-                            )
+        no_list = self.extract_job_cat_nos(job_cat_data)
 
-    def parse(self, response):  # HtmlResponse
-        html_text = response.body.decode('utf-8')
-        no_list = re.findall(r'"no":"(\d{10})"', html_text)
-        
-        page_size = 150
-        for i, no in enumerate(no_list):
+        start_page = 1
+        end_page = 10
+        for no in no_list:
             if no[-2:] == '00': continue
-            if no[0:4] != '2007': continue  # 只抓取資訊軟體相關職缺，因為全部抓太久了
-            # if i >= 3: break  # for test
-            for page in range(1, page_size+1):
+            if no[0:4] != '2007': continue  # 只抓取資訊軟體相關職缺
+            
+            for page in range(start_page, end_page + 1):
                 url = f'https://www.104.com.tw/jobs/search/?jobcat={no}&page={page}'
-
                 yield scrapy.Request(url=url,
                                      headers=self.head,
-                                     callback=self.parseEveryPage,
+                                     callback=self.parse,
                                     )
 
-    def parseEveryPage(self, response):
+    def extract_job_cat_nos(self, data):
+        no_list = []
+        if isinstance(data, dict):
+            if 'no' in data:
+                no_list.append(data['no'])
+            if 'n' in data:
+                for item in data['n']:
+                    no_list.extend(self.extract_job_cat_nos(item))
+        elif isinstance(data, list):
+            for item in data:
+                no_list.extend(self.extract_job_cat_nos(item))
+        return no_list
+
+    def parse(self, response):
         soup = BeautifulSoup(response.body, 'html.parser')
 
         if len(soup.select('.b-center.b-txt--center > p[class=b-tit]')) > 0:

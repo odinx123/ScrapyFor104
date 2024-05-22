@@ -264,39 +264,6 @@ class JobDatabase:
         else:
             print("Connection to MySQL not established.")
 
-    def convert_salary_to_range(self, salary):  # return 月薪範圍 [min, max] type=tuple
-        # 轉換各種薪資格式為月薪範圍 [min, max]
-        if '待遇面議' in salary:
-            return (0, INF)  # 表示全符合
-        
-        salary = salary.replace(',', '')  # 去除千分位符號
-
-        if '月薪' in salary:
-            if '以上' in salary:
-                min_salary = int(re.findall(r'\d+', salary)[0])
-                return (min_salary, INF)
-            else:
-                salary = tuple(re.findall(r'\d+', salary))
-                return salary
-        elif '年薪' in salary:
-            s = tuple(map(int, re.findall(r'\d+', salary)))
-            if '以上' in salary:
-                return (s[0] // 12, INF)
-            if len(s) == 1:
-                return (s[0] // 12,)
-            else:
-                return (s[0]//12, s[1]//12)
-        elif '時薪' in salary:
-            s = tuple(map(int, re.findall(r'\d+', salary)))
-            if '以上' in salary:
-                return (s[0] * 8 * 5 * 4, INF)
-            if len(s) == 1:
-                return (s[0] * 8 * 5 * 4,)
-            else:
-                return (s[0] * 8 * 5 * 4, s[1] * 8 * 5 * 4)
-
-        return (None, None)
-
     def is_within_range(self, salary_range, min_salary, max_salary):
         # 檢查給定範圍是否與薪資範圍重疊
         try:
@@ -308,22 +275,31 @@ class JobDatabase:
             pass
         return False
 
-    # salary 找出所有工作 [min_salary - max_salary]
-    def get_jobs_by_salary(self, jobs, min_salary, max_salary):
-            salary_jobs = []
-            for job in jobs:
-                salary_range = self.convert_salary_to_range(job[3])
-                if self.is_within_range(salary_range, min_salary, max_salary):
-                    salary_jobs.append(job)
-            return salary_jobs
+    # salary 找出所有工作在 [min_salary - max_salary]之間，不要用convert_salary_to_range
+    def get_jobs_by_salary(self, min_salary, max_salary):
+        if self.conn is not None:
+            try:
+                cursor = self.conn.cursor()
+                # mysql存的是(min, max)的tuple
+                query = '''
+                    SELECT * FROM job
+                    WHERE salary_min BETWEEN %s AND %s OR salary_max BETWEEN %s AND %s
+                '''
+                cursor.execute(query, (min_salary, max_salary)*2)
+                jobs = cursor.fetchall()
+                return jobs
+            except mysql.connector.Error as e:
+                print("Error retrieving data from MySQL:", e)
+        else:
+            print("Connection to MySQL not established.")
 
     # 得到所有salary
     def get_all_salaries(self):  # return 月薪範圍 [min, max] type=tuple
         if self.conn is not None:
             try:
                 cursor = self.conn.cursor()
-                cursor.execute("SELECT DISTINCT `salary` FROM `job`")
-                salaries = [self.convert_salary_to_range(salary[0]) for salary in cursor.fetchall()]
+                cursor.execute("SELECT DISTINCT salary_min, salary_max FROM job")
+                salaries = cursor.fetchall()
                 return salaries
             except mysql.connector.Error as e:
                 print("Error retrieving data from MySQL:", e)
@@ -417,6 +393,10 @@ class JobDatabase:
                         )
                     '''
                     params.append(tool)
+                
+                if min_salary is not None and max_salary is not None:
+                    query += 'AND salary_min BETWEEN %s AND %s OR salary_max BETWEEN %s AND %s'
+                    params.extend((min_salary, max_salary)*2)
 
                 if days is not None:
                     query += ' AND update_time >= DATE_SUB(CURDATE(), INTERVAL %s DAY)'
@@ -425,22 +405,15 @@ class JobDatabase:
                 cursor.execute(query, tuple(params))
                 jobs = cursor.fetchall()
 
-                # 處理薪水篩選
-                return self.get_jobs_by_salary(jobs, min_salary, max_salary)
+                return jobs
 
             except mysql.connector.Error as e:
                 print("Error retrieving data from MySQL:", e)
         else:
             print("Connection to MySQL not established.")
-
-def get_jobs_by_salary(self, jobs, min_salary=None, max_salary=None):
-    filtered_jobs = []
-    for job in jobs:
-        salary = job['salary']  # 假設 'salary' 是 jobs 裡的一個欄位
-        if (min_salary is None or salary >= min_salary) and (max_salary is None or salary <= max_salary):
-            filtered_jobs.append(job)
-    return filtered_jobs
-
+    
+def conver_salary_to_PythonStyle(salary_min, salary_max):
+    return (salary_min, INF if salary_max == 3.40282e+38 else int(salary_max))
 
 # 測試連接與獲取資料
 def main():
@@ -451,16 +424,29 @@ def main():
         password="9879",
         database="job104"
     )
-    # print(db.get_jobs())
-    # columns = db.convert_salary_to_range('待遇面議')
-    
-    print('skill', db.get_all_skills())
-    job = db.get_jobs_by_filter('後端工程師', None, None, None, None, 1, 0, 1000000)
-    
-    pprint.pp(job)
 
-    # job = db.get_jobs_by_tool('Linux')
-    # print("Jobs:", job)
+    jobs = db.get_jobs_by_salary(3, 30000)
+    try:
+        for j in jobs:
+            print(conver_salary_to_PythonStyle(j[3], j[4]), end=' ')
+    except:
+        pass
+    print('=============================================')
+    # conver_salary_to_MySQLStyle(INF, INF)
+    jobs = db.get_jobs_by_filter(category=None,
+                                 skill=None,
+                                 experience=None,
+                                 education=None,
+                                 tool=None,
+                                 days=None,
+                                 min_salary=3,
+                                 max_salary=30000
+                                )
+    try:
+        for j in jobs:
+            print(conver_salary_to_PythonStyle(j[3], j[4]), end=' ')
+    except:
+        pass
 
 if __name__ == "__main__":
     main()
