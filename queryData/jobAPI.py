@@ -456,7 +456,7 @@ class JobDatabase:
                     query += ' AND update_time >= DATE_SUB(CURDATE(), INTERVAL %s DAY)'
                     params.append(days)
 
-                if min_salary is not None and max_salary is not None:
+                if min_salary is not None and max_salary is not None and max_salary >= min_salary:
                     query += 'AND salary_min BETWEEN %s AND %s OR salary_max BETWEEN %s AND %s'
                     params.extend((min_salary, max_salary)*2)
 
