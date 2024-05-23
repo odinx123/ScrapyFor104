@@ -335,72 +335,130 @@ class JobDatabase:
                 params = []
 
                 if category:
-                    query += '''
-                        AND job_id IN (
-                            SELECT job_id FROM Job_Category
-                            WHERE category_id IN (
-                                SELECT category_id FROM Categories
-                                WHERE category_name = %s
+                    if isinstance(category, list):
+                        query += '''AND job_id IN (
+                                        SELECT job_id FROM Job_Category
+                                        WHERE category_id IN (
+                                            SELECT category_id FROM Categories
+                                            WHERE category_name IN (
+                        '''
+                        query += ', '.join(['%s']*len(category))
+                        query += ')))'
+                        params.extend(category)
+                    else:
+                        query += '''
+                            AND job_id IN (
+                                SELECT job_id FROM Job_Category
+                                WHERE category_id IN (
+                                    SELECT category_id FROM Categories
+                                    WHERE category_name = %s
+                                )
                             )
-                        )
-                    '''
-                    params.append(category)
+                        '''
+                        params.append(category)
 
                 if skill:
-                    query += '''
-                        AND job_id IN (
-                            SELECT job_id FROM Job_Skill
-                            WHERE skill_id IN (
-                                SELECT skill_id FROM Skills
-                                WHERE name = %s
+                    if isinstance(skill, list):
+                        query += '''AND job_id IN (
+                                        SELECT job_id FROM Job_Skill
+                                        WHERE skill_id IN (
+                                            SELECT skill_id FROM Skills
+                                            WHERE name IN (
+                        '''
+                        query += ', '.join(['%s']*len(skill))
+                        query += ')))'
+                        params.extend(skill)
+                    else:
+                        query += '''
+                            AND job_id IN (
+                                SELECT job_id FROM Job_Skill
+                                WHERE skill_id IN (
+                                    SELECT skill_id FROM Skills
+                                    WHERE name = %s
+                                )
                             )
-                        )
-                    '''
-                    params.append(skill)
+                        '''
+                        params.append(skill)
 
                 if experience:
-                    query += '''
-                        AND job_id IN (
-                            SELECT job_id FROM Job_Experience
-                            WHERE experience_id IN (
-                                SELECT experience_id FROM Experience
-                                WHERE experience = %s
+                    if isinstance(experience, list):
+                        query += '''
+                            AND job_id IN (
+                                SELECT job_id FROM Job_Experience
+                                WHERE experience_id IN (
+                                    SELECT experience_id FROM Experience
+                                    WHERE experience IN (
+                        '''
+                        query += ', '.join(['%s']*len(experience))
+                        query += ')))'
+                        params.extend(experience)
+                    else:
+                        query += '''
+                            AND job_id IN (
+                                SELECT job_id FROM Job_Experience
+                                WHERE experience_id IN (
+                                    SELECT experience_id FROM Experience
+                                    WHERE experience = %s
+                                )
                             )
-                        )
-                    '''
-                    params.append(experience)
+                        '''
+                        params.append(experience)
 
                 if education:
-                    query += '''
-                        AND job_id IN (
-                            SELECT job_id FROM Job_Education
-                            WHERE education_id IN (
-                                SELECT education_id FROM Education
-                                WHERE level = %s
+                    if isinstance(education, list):
+                        query += '''
+                            AND job_id IN (
+                                SELECT job_id FROM Job_Education
+                                WHERE education_id IN (
+                                    SELECT education_id FROM Education
+                                    WHERE level IN (
+                        '''
+                        query += ', '.join(['%s']*len(education))
+                        query += ')))'
+                        params.extend(education)
+                    else:
+                        query += '''
+                            AND job_id IN (
+                                SELECT job_id FROM Job_Education
+                                WHERE education_id IN (
+                                    SELECT education_id FROM Education
+                                    WHERE level = %s
+                                )
                             )
-                        )
-                    '''
-                    params.append(education)
+                        '''
+                        params.append(education)
 
                 if tool:
-                    query += '''
-                        AND job_id IN (
-                            SELECT job_id FROM Job_Tool
-                            WHERE tool_id IN (
-                                SELECT tool_id FROM Tools
-                                WHERE specialty_tool = %s
+                    if isinstance(tool, list):
+                        query += '''
+                            AND job_id IN (
+                                SELECT job_id FROM Job_Tool
+                                WHERE tool_id IN (
+                                    SELECT tool_id FROM Tools
+                                    WHERE specialty_tool IN (
+                        '''
+                        query += ', '.join(['%s']*len(tool))
+                        query += ')))'
+                        params.extend(tool)
+                    else:
+                        query += '''
+                            AND job_id IN (
+                                SELECT job_id FROM Job_Tool
+                                WHERE tool_id IN (
+                                    SELECT tool_id FROM Tools
+                                    WHERE specialty_tool = %s
+                                )
                             )
-                        )
-                    '''
-                    params.append(tool)
+                        '''
+                        params.append(tool)
                 
-                if min_salary is not None and max_salary is not None:
-                    query += 'AND salary_min BETWEEN %s AND %s OR salary_max BETWEEN %s AND %s'
-                    params.extend((min_salary, max_salary)*2)
-
                 if days is not None:
                     query += ' AND update_time >= DATE_SUB(CURDATE(), INTERVAL %s DAY)'
                     params.append(days)
+
+                if min_salary is not None and max_salary is not None:
+                    query += 'AND salary_min BETWEEN %s AND %s OR salary_max BETWEEN %s AND %s'
+                    params.extend((min_salary, max_salary)*2)
 
                 cursor.execute(query, tuple(params))
                 jobs = cursor.fetchall()
@@ -425,26 +483,20 @@ def main():
         database="job104"
     )
 
-    jobs = db.get_jobs_by_salary(3, 30000)
-    try:
-        for j in jobs:
-            print(conver_salary_to_PythonStyle(j[3], j[4]), end=' ')
-    except:
-        pass
     print('=============================================')
     # conver_salary_to_MySQLStyle(INF, INF)
-    jobs = db.get_jobs_by_filter(category=None,
+    jobs = db.get_jobs_by_filter(category=['後端工程師', '網路管理工程師'],
                                  skill=None,
                                  experience=None,
                                  education=None,
                                  tool=None,
                                  days=None,
-                                 min_salary=3,
-                                 max_salary=30000
+                                 min_salary=None,
+                                 max_salary=None
                                 )
     try:
         for j in jobs:
-            print(conver_salary_to_PythonStyle(j[3], j[4]), end=' ')
+            print(j[1], end=',   ')
     except:
         pass
 

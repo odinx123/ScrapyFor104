@@ -22,9 +22,8 @@ class Crawljob104Spider(scrapy.Spider):
         no_list = self.extract_job_cat_nos(job_cat_data)
 
         start_page = 1
-        end_page = 10
+        end_page = 1
         for no in no_list:
-            if no[-2:] == '00': continue
             if no[0:4] != '2007': continue  # 只抓取資訊軟體相關職缺
             
             for page in range(start_page, end_page + 1):
@@ -37,11 +36,11 @@ class Crawljob104Spider(scrapy.Spider):
     def extract_job_cat_nos(self, data):
         no_list = []
         if isinstance(data, dict):
-            if 'no' in data:
-                no_list.append(data['no'])
             if 'n' in data:
                 for item in data['n']:
                     no_list.extend(self.extract_job_cat_nos(item))
+            elif 'no' in data:  # 有n就不要no(不要大類別的no)
+                no_list.append(data['no'])
         elif isinstance(data, list):
             for item in data:
                 no_list.extend(self.extract_job_cat_nos(item))
