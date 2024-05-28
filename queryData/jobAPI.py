@@ -324,7 +324,7 @@ class JobDatabase:
             print("Connection to MySQL not established.")
 
     # filter 找出所有工作
-    def get_jobs_by_filter(self, category=None, skill=None, experience=None, education=None, tool=None, days=None, min_salary=0, max_salary=INF):
+    def get_jobs_by_filter(self, category=None, skill=None, education=None, tool=None, experience=None, days=None, min_salary=0, max_salary=INF):
         if self.conn is not None:
             try:
                 cursor = self.conn.cursor()
@@ -381,28 +381,16 @@ class JobDatabase:
                         params.append(skill)
 
                 if experience:
-                    if isinstance(experience, list):
-                        query += '''
-                            AND job_id IN (
-                                SELECT job_id FROM Job_Experience
-                                WHERE experience_id IN (
-                                    SELECT experience_id FROM Experience
-                                    WHERE experience IN (
-                        '''
-                        query += ', '.join(['%s']*len(experience))
-                        query += ')))'
-                        params.extend(experience)
-                    else:
-                        query += '''
-                            AND job_id IN (
-                                SELECT job_id FROM Job_Experience
-                                WHERE experience_id IN (
-                                    SELECT experience_id FROM Experience
-                                    WHERE experience = %s
-                                )
+                    query += '''
+                        AND job_id IN (
+                            SELECT job_id FROM Job_Experience
+                            WHERE experience_id IN (
+                                SELECT experience_id FROM Experience
+                                WHERE experience = %s
                             )
-                        '''
-                        params.append(experience)
+                        )
+                    '''
+                    params.append(experience)
 
                 if education:
                     if isinstance(education, list):
@@ -470,6 +458,117 @@ class JobDatabase:
         else:
             print("Connection to MySQL not established.")
     
+    def get_jobInfo_by_id(self, job_id):
+        if job_id is 0 or job_id is None:
+            return None
+        if self.conn is not None:
+            try:
+                cursor = self.conn.cursor()
+                query = '''
+                    SELECT * FROM job
+                    WHERE job_id = %s
+                '''
+                title = ['job_id', 'job_title', 'company_title', 'min_salary',
+                         'salary_max', 'address', 'industry', 'update_time',
+                        ]
+                job = {}
+                cursor.execute(query, (job_id,))
+                for i, j in zip(title, cursor.fetchone()):
+                    job.update({i: j})
+                if job['salary_max'] == 3.40282e+38:
+                    job['salary_max'] = INF
+
+                # tool
+                query = '''
+                    SELECT specialty_tool FROM Tools
+                    WHERE tool_id IN (
+                        SELECT tool_id FROM Job_Tool
+                        WHERE job_id = %s
+                    )
+                '''
+                cursor.execute(query, (job_id,))
+                tools = [tool[0] for tool in cursor.fetchall()]
+                job.update({'tool': tools})
+                # category
+                query = '''
+                    SELECT category_name FROM Categories
+                    WHERE category_id IN (
+                        SELECT category_id FROM Job_Category
+                        WHERE job_id = %s
+                    )
+                '''
+                cursor.execute(query, (job_id,))
+                categories = [category[0] for category in cursor.fetchall()]
+                job.update({'category': categories})
+                # skill
+                query = '''
+                    SELECT name FROM Skills
+                    WHERE skill_id IN (
+                        SELECT skill_id FROM Job_Skill
+                        WHERE job_id = %s
+                    )
+                '''
+                cursor.execute(query, (job_id,))
+                skills = [skill[0] for skill in cursor.fetchall()]
+                job.update({'skill': skills})
+                # experience
+                query = '''
+                    SELECT experience FROM Experience
+                    WHERE experience_id IN (
+                        SELECT experience_id FROM Job_Experience
+                        WHERE job_id = %s
+                    )
+                '''
+                cursor.execute(query, (job_id,))
+                experiences = [experience[0] for experience in cursor.fetchall()]
+                job.update({'experience': experiences})
+                # education
+                query = '''
+                    SELECT level FROM Education
+                    WHERE education_id IN (
+                        SELECT education_id FROM Job_Education
+                        WHERE job_id = %s
+                    )
+                '''
+                cursor.execute(query, (job_id,))
+                educations = [education[0] for education in cursor.fetchall()]
+                job.update({'education': educations})
+                return job
+            except mysql.connector.Error as e:
+                print("Error retrieving data from MySQL:", e)
+        else:
+            print("Connection to MySQL not established.")
+
+    def get_jobInfo(self, n):
+        for i in range(n):
+            yield self.get_jobInfo_by_id(i+1)
+    
+    def get_jobInfo_by_filter(self, category=None, skill=None, education=None, tool=None, experience=None, days=None, min_salary=0, max_salary=INF):
+        jobs = self.get_jobs_by_filter(category=category,
+                                        skill=skill,
+                                        education=education,
+                                        tool=tool,
+                                        experience=experience,
+                                        days=days,
+                                        min_salary=min_salary,
+                                        max_salary=max_salary
+                                      )
+        # print(jobs)
+        for job in jobs:
+            # print(self.get_jobInfo_by_id(job[0]))
+            yield self.get_jobInfo_by_id(job[0])
+    
+    def get_number_by_filter(self, category=None, skill=None, education=None, tool=None, experience=None, days=None, min_salary=0, max_salary=INF):
+        return len(self.get_jobs_by_filter(category=category,
+                                        skill=skill,
+                                        education=education,
+                                        tool=tool,
+                                        experience=experience,
+                                        days=days,
+                                        min_salary=min_salary,
+                                        max_salary=max_salary
+                                      ))
+
 def conver_salary_to_PythonStyle(salary_min, salary_max):
     return (salary_min, INF if salary_max == 3.40282e+38 else int(salary_max))
 
@@ -484,21 +583,32 @@ def main():
     )
 
     print('=============================================')
-    # conver_salary_to_MySQLStyle(INF, INF)
-    jobs = db.get_jobs_by_filter(category=['後端工程師', '網路管理工程師'],
+    print(db.get_number_by_filter(category=None,
                                  skill=None,
+                                 education=None,
+                                 tool=['python'],
                                  experience=None,
+                                 days=None,
+                                 min_salary=None,
+                                 max_salary=None))
+
+    jobs = db.get_jobInfo_by_filter(category=['後端工程師', '網路管理工程師'],
+                                 skill=None,
                                  education=None,
                                  tool=None,
+                                 experience=None,
                                  days=None,
                                  min_salary=None,
                                  max_salary=None
                                 )
-    try:
-        for j in jobs:
-            print(j[1], end=',   ')
-    except:
-        pass
+    # info = db.get_jobInfo_by_id(16)
+    # for i in jobs:
+    #     pprint.pprint(i)
+    # pprint.pprint(info)
+    # print('\n', db.get_jobs())
+
+    # for i in db.get_jobInfo(5):
+    #     pprint.pprint(i)
 
 if __name__ == "__main__":
     main()
