@@ -20,7 +20,7 @@ class JobDatabase:
                 password=self.password,
                 database=self.database
             )
-            print("Connected to MySQL database")
+            print(f"Connected to MySQL database({self.database})")
             return conn
         except mysql.connector.Error as e:
             print("Error connecting to MySQL database:", e)
@@ -569,6 +569,73 @@ class JobDatabase:
                                         max_salary=max_salary
                                       ))
 
+    def move_data_from(self, database):
+        if self.conn is not None:
+            try:
+                cursor = self.conn.cursor()
+                tables = self.get_all_table()
+
+                with_underscore = [table for table in tables if '_' in table]
+                without_underscore = [table for table in tables if '_' not in table]
+
+                for table in without_underscore:
+                    columns = self.get_columns(table)
+                    sql = f"""INSERT IGNORE INTO {table} ({', '.join(columns)})
+                              VALUES
+                              ({', '.join(['%s']*len(columns))})"""
+                    
+                    cursor.execute(f"SELECT * FROM {database}.{table}")
+                    data = cursor.fetchall()
+                    
+                    for row in data:
+                        cursor.execute(sql, row)
+                    print(f"Data moved from {database}.{table} to {self.database}.{table}")
+
+                for table in with_underscore:
+                    columns = self.get_columns(table)
+                    sql = f"""INSERT IGNORE INTO {table} ({', '.join(columns)})
+                              VALUES
+                              ({', '.join(['%s']*len(columns))})"""
+                    
+                    cursor.execute(f"SELECT * FROM {database}.{table}")
+                    data = cursor.fetchall()
+                    
+                    for row in data:
+                        cursor.execute(sql, row)
+                    print(f"Data moved from {database}.{table} to {self.database}.{table}")
+
+                self.conn.commit()
+            except mysql.connector.Error as e:
+                print("Error moving data from MySQL:", e)
+        else:
+            print("Connection to MySQL not established.")
+
+    # remove database job104 all table
+    def remove_all_table_data(self):
+        if self.database != 'job104':
+            print('This function is only for job104 database.')
+            return
+        if self.conn is not None:
+            try:
+                cursor = self.conn.cursor()
+                
+                cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
+                
+                cursor.execute("SHOW TABLES;")
+                tables = cursor.fetchall()
+                for table in tables:
+                    table_name = table[0]
+                    cursor.execute(f"TRUNCATE TABLE {table_name};")
+                
+                cursor.execute("SET FOREIGN_KEY_CHECKS = 1;")
+                
+                self.conn.commit()
+                print("All table data removed from MySQL.")
+            except mysql.connector.Error as e:
+                print("Error removing table from MySQL:", e)
+        else:
+            print("Connection to MySQL not established.")
+
 def conver_salary_to_PythonStyle(salary_min, salary_max):
     return (salary_min, INF if salary_max == 3.40282e+38 else int(salary_max))
 
@@ -606,9 +673,14 @@ def main():
     #     pprint.pprint(i)
     # pprint.pprint(info)
     # print('\n', db.get_jobs())
+    print(db.get_all_table())
+    name = 'tools'
+    data = db.get_all_tools()
+    print(data)
 
-    # for i in db.get_jobInfo(5):
-    #     pprint.pprint(i)
+    # lis = [i for i in db.get_jobInfo(10)]
+    with open(fr'queryData/{name}.txt', 'w') as f:
+        pprint.pprint(data, stream=f)
 
 if __name__ == "__main__":
     main()

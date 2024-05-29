@@ -34,8 +34,7 @@ jobs:
           USER_NAME: ${{ secrets.USER_NAME }}
           PASSWD: ${{ secrets.PASSWD }}
         run: |
-          cd scrapyFor104
-          scrapy crawl crawlJob104
+          python moveData.py
           
       - name: commit files
         run: |
