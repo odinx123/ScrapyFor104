@@ -456,7 +456,6 @@ class JobDatabase:
                 jobs = cursor.fetchall()
 
                 return jobs
-
             except mysql.connector.Error as e:
                 print("Error retrieving data from MySQL:", e)
         else:
@@ -548,29 +547,142 @@ class JobDatabase:
             yield self.get_jobInfo_by_id(i+1)
     
     def get_jobInfo_by_filter(self, category=None, skill=None, education=None, tool=None, experience=None, days=None, min_salary=0, max_salary=INF, limit=None):
-        jobs_id = self.get_jobs_id_by_filter(category=category,
-                                        skill=skill,
-                                        education=education,
-                                        tool=tool,
-                                        experience=experience,
-                                        days=days,
-                                        min_salary=min_salary,
-                                        max_salary=max_salary,
-                                        limit=limit
-                                      )
-        for job_id in jobs_id:
+        job_ids = self.get_jobs_id_by_filter(category, skill, education, tool, experience, days, min_salary, max_salary, limit)
+        for job_id in job_ids:
             yield self.get_jobInfo_by_id(job_id[0])
     
     def get_number_by_filter(self, category=None, skill=None, education=None, tool=None, experience=None, days=None, min_salary=0, max_salary=INF):
-        return len(self.get_jobs_id_by_filter(category=category,
-                                        skill=skill,
-                                        education=education,
-                                        tool=tool,
-                                        experience=experience,
-                                        days=days,
-                                        min_salary=min_salary,
-                                        max_salary=max_salary
-                                      ))
+        if self.conn is not None:
+            try:
+                cursor = self.conn.cursor()
+                query = '''
+                    SELECT COUNT(*) FROM job
+                    WHERE 1=1
+                '''
+                params = []
+
+                if category:
+                    if isinstance(category, list):
+                        query += '''AND job_id IN (
+                                        SELECT job_id FROM Job_Category
+                                        WHERE category_id IN (
+                                            SELECT category_id FROM Categories
+                                            WHERE category_name IN (
+                        '''
+                        query += ', '.join(['%s']*len(category))
+                        query += ')))'
+                        params.extend(category)
+                    else:
+                        query += '''
+                            AND job_id IN (
+                                SELECT job_id FROM Job_Category
+                                WHERE category_id IN (
+                                    SELECT category_id FROM Categories
+                                    WHERE category_name = %s
+                                )
+                            )
+                        '''
+                        params.append(category)
+
+                if skill:
+                    if isinstance(skill, list):
+                        query += '''AND job_id IN (
+                                        SELECT job_id FROM Job_Skill
+                                        WHERE skill_id IN (
+                                            SELECT skill_id FROM Skills
+                                            WHERE name IN (
+                        '''
+                        query += ', '.join(['%s']*len(skill))
+                        query += ')))'
+                        params.extend(skill)
+                    else:
+                        query += '''
+                            AND job_id IN (
+                                SELECT job_id FROM Job_Skill
+                                WHERE skill_id IN (
+                                    SELECT skill_id FROM Skills
+                                    WHERE name = %s
+                                )
+                            )
+                        '''
+                        params.append(skill)
+
+                if experience:
+                    query += '''
+                        AND job_id IN (
+                            SELECT job_id FROM Job_Experience
+                            WHERE experience_id IN (
+                                SELECT experience_id FROM Experience
+                                WHERE experience = %s
+                            )
+                        )
+                    '''
+                    params.append(experience)
+
+                if education:
+                    if isinstance(education, list):
+                        query += '''
+                            AND job_id IN (
+                                SELECT job_id FROM Job_Education
+                                WHERE education_id IN (
+                                    SELECT education_id FROM Education
+                                    WHERE level IN (
+                        '''
+                        query += ', '.join(['%s']*len(education))
+                        query += ')))'
+                        params.extend(education)
+                    else:
+                        query += '''
+                            AND job_id IN (
+                                SELECT job_id FROM Job_Education
+                                WHERE education_id IN (
+                                    SELECT education_id FROM Education
+                                    WHERE level = %s
+                                )
+                            )
+                        '''
+                        params.append(education)
+
+                if tool:
+                    if isinstance(tool, list):
+                        query += '''
+                            AND job_id IN (
+                                SELECT job_id FROM Job_Tool
+                                WHERE tool_id IN (
+                                    SELECT tool_id FROM Tools
+                                    WHERE specialty_tool IN (
+                        '''
+                        query += ', '.join(['%s']*len(tool))
+                        query += ')))'
+                        params.extend(tool)
+                    else:
+                        query += '''
+                            AND job_id IN (
+                                SELECT job_id FROM Job_Tool
+                                WHERE tool_id IN (
+                                    SELECT tool_id FROM Tools
+                                    WHERE specialty_tool = %s
+                                )
+                            )
+                        '''
+                        params.append(tool)
+                
+                if days is not None:
+                    query += ' AND update_time >= DATE_SUB(CURDATE(), INTERVAL %s DAY)'
+                    params.append(days)
+
+                if min_salary is not None and max_salary is not None and max_salary >= min_salary:
+                    query += 'AND salary_min BETWEEN %s AND %s OR salary_max BETWEEN %s AND %s'
+                    params.extend((min_salary, max_salary)*2)
+
+                cursor.execute(query, tuple(params))
+                jobs = cursor.fetchone()
+
+                return jobs[0]
+            except mysql.connector.Error as e:
+                print("Error retrieving data from MySQL:", e)
+        else:
+            print("Connection to MySQL not established.")
 
     def move_data_from(self, database):
         if self.conn is not None:
@@ -669,8 +781,10 @@ def main():
                                  experience=None,
                                  days=None,
                                  min_salary=None,
-                                 max_salary=None
+                                 max_salary=None,
+                                 limit=10
                                 )
+    
     
     for i in jobs:
         print(i)
