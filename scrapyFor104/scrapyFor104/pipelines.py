@@ -95,7 +95,7 @@ class Scrapyfor104Pipeline:
                                 '''
             )
 
-            edu = item['edu']
+            edu = [e for e in item['edu'] if '以上' not in e]
             for e in edu:
                 self.cursor.execute(f'''
                                     INSERT IGNORE INTO `Education`

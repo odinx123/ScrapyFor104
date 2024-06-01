@@ -324,12 +324,12 @@ class JobDatabase:
             print("Connection to MySQL not established.")
 
     # filter 找出所有工作
-    def get_jobs_by_filter(self, category=None, skill=None, education=None, tool=None, experience=None, days=None, min_salary=0, max_salary=INF):
+    def get_jobs_id_by_filter(self, category=None, skill=None, education=None, tool=None, experience=None, days=None, min_salary=0, max_salary=INF, limit=None):
         if self.conn is not None:
             try:
                 cursor = self.conn.cursor()
                 query = '''
-                    SELECT * FROM job
+                    SELECT `job_id` FROM job
                     WHERE 1=1
                 '''
                 params = []
@@ -447,6 +447,10 @@ class JobDatabase:
                 if min_salary is not None and max_salary is not None and max_salary >= min_salary:
                     query += 'AND salary_min BETWEEN %s AND %s OR salary_max BETWEEN %s AND %s'
                     params.extend((min_salary, max_salary)*2)
+                
+                if limit is not None:
+                    query += ' LIMIT %s'
+                    params.append(limit)
 
                 cursor.execute(query, tuple(params))
                 jobs = cursor.fetchall()
@@ -543,23 +547,22 @@ class JobDatabase:
         for i in range(n):
             yield self.get_jobInfo_by_id(i+1)
     
-    def get_jobInfo_by_filter(self, category=None, skill=None, education=None, tool=None, experience=None, days=None, min_salary=0, max_salary=INF):
-        jobs = self.get_jobs_by_filter(category=category,
+    def get_jobInfo_by_filter(self, category=None, skill=None, education=None, tool=None, experience=None, days=None, min_salary=0, max_salary=INF, limit=None):
+        jobs_id = self.get_jobs_id_by_filter(category=category,
                                         skill=skill,
                                         education=education,
                                         tool=tool,
                                         experience=experience,
                                         days=days,
                                         min_salary=min_salary,
-                                        max_salary=max_salary
+                                        max_salary=max_salary,
+                                        limit=limit
                                       )
-        # print(jobs)
-        for job in jobs:
-            # print(self.get_jobInfo_by_id(job[0]))
-            yield self.get_jobInfo_by_id(job[0])
+        for job_id in jobs_id:
+            yield self.get_jobInfo_by_id(job_id[0])
     
     def get_number_by_filter(self, category=None, skill=None, education=None, tool=None, experience=None, days=None, min_salary=0, max_salary=INF):
-        return len(self.get_jobs_by_filter(category=category,
+        return len(self.get_jobs_id_by_filter(category=category,
                                         skill=skill,
                                         education=education,
                                         tool=tool,
@@ -646,7 +649,7 @@ def main():
         host="localhost",
         username="root",
         password="9879",
-        database="job104"
+        database="jobDatabase"
     )
 
     print('=============================================')
@@ -668,19 +671,14 @@ def main():
                                  min_salary=None,
                                  max_salary=None
                                 )
-    # info = db.get_jobInfo_by_id(16)
-    # for i in jobs:
-    #     pprint.pprint(i)
-    # pprint.pprint(info)
-    # print('\n', db.get_jobs())
-    print(db.get_all_table())
-    name = 'tools'
-    data = db.get_all_tools()
-    print(data)
-
-    # lis = [i for i in db.get_jobInfo(10)]
-    with open(fr'queryData/{name}.txt', 'w') as f:
-        pprint.pprint(data, stream=f)
+    
+    for i in jobs:
+        print(i)
+    # name = 'jobs'
+    # with open(fr'{name}.txt', 'w', encoding='utf-8') as f:
+    #     data = [j for j in jobs]
+    #     pprint.pprint(data, stream=f)
+    #     pprint.pprint(data, stream=f)
 
 if __name__ == "__main__":
     main()

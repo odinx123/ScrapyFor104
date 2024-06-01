@@ -1,8 +1,8 @@
-CREATE DATABASE `jobDatabase`;
--- CREATE DATABASE `job104`;
+-- CREATE DATABASE `jobDatabase`;
+CREATE DATABASE `job104`;
 
--- USE `job104`
-USE `jobDatabase`
+USE `job104`
+-- USE `jobDatabase`
 
 CREATE TABLE `job`(
     `job_id` INT AUTO_INCREMENT,
@@ -55,39 +55,39 @@ CREATE TABLE `Experience`(
 CREATE TABLE `Job_Category`(
     `job_id` INT,
     `category_id` INT,
-    FOREIGN KEY(`job_id`) REFERENCES `job`(`job_id`),
-    FOREIGN KEY(`category_id`) REFERENCES `Categories`(`category_id`),
+    FOREIGN KEY(`job_id`) REFERENCES `job`(`job_id`) ON DELETE CASCADE,
+    FOREIGN KEY(`category_id`) REFERENCES `Categories`(`category_id`) ON DELETE CASCADE,
     UNIQUE(`job_id`, `category_id`)
 );
 
 CREATE TABLE `Job_Skill`(
     `job_id` INT,
     `skill_id` INT,
-    FOREIGN KEY(`job_id`) REFERENCES `job`(`job_id`),
-    FOREIGN KEY(`skill_id`) REFERENCES `Skills`(`skill_id`),
+    FOREIGN KEY(`job_id`) REFERENCES `job`(`job_id`) ON DELETE CASCADE,
+    FOREIGN KEY(`skill_id`) REFERENCES `Skills`(`skill_id`) ON DELETE CASCADE,
     UNIQUE(`job_id`, `skill_id`)
 );
 
 CREATE TABLE `Job_Tool`(
     `job_id` INT,
     `tool_id` INT,
-    FOREIGN KEY(`job_id`) REFERENCES `job`(`job_id`),
-    FOREIGN KEY(`tool_id`) REFERENCES `Tools`(`tool_id`),
+    FOREIGN KEY(`job_id`) REFERENCES `job`(`job_id`) ON DELETE CASCADE,
+    FOREIGN KEY(`tool_id`) REFERENCES `Tools`(`tool_id`) ON DELETE CASCADE,
     UNIQUE(`job_id`, `tool_id`)
 );
 
 CREATE TABLE `Job_Education`(
     `job_id` INT,
     `education_id` INT,
-    FOREIGN KEY(`job_id`) REFERENCES `job`(`job_id`),
-    FOREIGN KEY(`education_id`) REFERENCES `Education`(`education_id`),
+    FOREIGN KEY(`job_id`) REFERENCES `job`(`job_id`) ON DELETE CASCADE,
+    FOREIGN KEY(`education_id`) REFERENCES `Education`(`education_id`) ON DELETE CASCADE,
     UNIQUE(`job_id`, `education_id`)
 );
 
 CREATE TABLE `Job_Experience`(
     `job_id` INT,
     `experience_id` INT,
-    FOREIGN KEY(`job_id`) REFERENCES `job`(`job_id`),
-    FOREIGN KEY(`experience_id`) REFERENCES `Experience`(`experience_id`),
+    FOREIGN KEY(`job_id`) REFERENCES `job`(`job_id`) ON DELETE CASCADE,
+    FOREIGN KEY(`experience_id`) REFERENCES `Experience`(`experience_id`) ON DELETE CASCADE,
     UNIQUE(`job_id`, `experience_id`)
 );
