@@ -22,7 +22,7 @@ class Crawljob104Spider(scrapy.Spider):
         no_list = self.extract_job_cat_nos(job_cat_data)
 
         start_page = 1
-        end_page = 3
+        end_page = 2
         for no in no_list:
             if no[0:4] != '2007': continue  # 只抓取資訊軟體相關職缺
             
