@@ -445,7 +445,7 @@ class JobDatabase:
                     params.append(days)
 
                 if min_salary is not None and max_salary is not None and max_salary >= min_salary:
-                    query += 'AND salary_min BETWEEN %s AND %s OR salary_max BETWEEN %s AND %s'
+                    query += 'AND (salary_min BETWEEN %s AND %s OR salary_max BETWEEN %s AND %s)'
                     params.extend((min_salary, max_salary)*2)
                 
                 if limit is not None:
@@ -672,7 +672,7 @@ class JobDatabase:
                     params.append(days)
 
                 if min_salary is not None and max_salary is not None and max_salary >= min_salary:
-                    query += 'AND salary_min BETWEEN %s AND %s OR salary_max BETWEEN %s AND %s'
+                    query += 'AND (salary_min BETWEEN %s AND %s OR salary_max BETWEEN %s AND %s)'
                     params.extend((min_salary, max_salary)*2)
 
                 cursor.execute(query, tuple(params))
@@ -765,27 +765,27 @@ def main():
     )
 
     print('=============================================')
-    print(db.get_number_by_filter(category=None,
+    print(db.get_number_by_filter(category=['後端工程師', '網路管理工程師'],
                                  skill=None,
                                  education=None,
                                  tool=['python'],
                                  experience=None,
                                  days=None,
-                                 min_salary=None,
-                                 max_salary=None))
+                                 min_salary=30000,
+                                 max_salary=40000))
 
     jobs = db.get_jobInfo_by_filter(category=['後端工程師', '網路管理工程師'],
                                  skill=None,
                                  education=None,
-                                 tool=None,
+                                 tool=['python'],
                                  experience=None,
                                  days=None,
-                                 min_salary=None,
-                                 max_salary=None,
+                                 min_salary=30000,
+                                 max_salary=40000,
                                  limit=10
                                 )
     
-    
+    # print(len(list(jobs)))
     for i in jobs:
         print(i)
     # name = 'jobs'
