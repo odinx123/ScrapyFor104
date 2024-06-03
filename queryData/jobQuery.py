@@ -757,12 +757,13 @@ def conver_salary_to_PythonStyle(salary_min, salary_max):
 # 測試連接與獲取資料
 def main():
     import pprint
-    # db = JobDatabase(
-    #     host="localhost",
-    #     username="root",
-    #     password="9879",
-    #     database="jobDatabase"
-    # )
+    print('hello world')
+    db = JobDatabase(
+        host="localhost",
+        username="root",
+        password="9879",
+        database="jobDatabase"
+    )
 
     print('=============================================')
     print(db.get_number_by_filter(category=None,
