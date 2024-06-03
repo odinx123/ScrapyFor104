@@ -757,22 +757,22 @@ def conver_salary_to_PythonStyle(salary_min, salary_max):
 # 測試連接與獲取資料
 def main():
     import pprint
-    db = JobDatabase(
-        host="localhost",
-        username="root",
-        password="9879",
-        database="jobDatabase"
-    )
+    # db = JobDatabase(
+    #     host="localhost",
+    #     username="root",
+    #     password="9879",
+    #     database="jobDatabase"
+    # )
 
     print('=============================================')
-    print(db.get_number_by_filter(category=['後端工程師', '網路管理工程師'],
+    print(db.get_number_by_filter(category=None,
                                  skill=None,
                                  education=None,
                                  tool=['python'],
                                  experience=None,
                                  days=None,
-                                 min_salary=30000,
-                                 max_salary=40000))
+                                 min_salary=None,
+                                 max_salary=None))
 
     jobs = db.get_jobInfo_by_filter(category=['後端工程師', '網路管理工程師'],
                                  skill=None,

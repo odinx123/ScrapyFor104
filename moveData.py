@@ -1,4 +1,4 @@
-from queryData.jobAPI import JobDatabase
+from queryData.jobQuery import JobDatabase
 import os
 
 def main():
