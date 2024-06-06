@@ -71,7 +71,7 @@ class ScrollableFrame:
             else:    
                 ttk.Label(frame, text='工作經驗'+data_list[i]['experience'][0], font=('Arial', 15, 'bold')).pack()
             tool='' 
-            for data in data_list[i]['tools']:
+            for data in data_list[i]['tool']:
                 tool+=data
                 tool+=' '
             ttk.Label(frame, text='使用工具 : '+tool, font=('Arial', 15, 'bold')).pack()

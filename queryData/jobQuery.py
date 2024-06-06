@@ -491,7 +491,7 @@ class JobDatabase:
                 '''
                 cursor.execute(query, (job_id,))
                 tools = [tool[0] for tool in cursor.fetchall()]
-                job.update({'tool': tools})
+                job.update({'tools': tools})
                 # category
                 query = '''
                     SELECT category_name FROM Categories
@@ -513,7 +513,7 @@ class JobDatabase:
                 '''
                 cursor.execute(query, (job_id,))
                 skills = [skill[0] for skill in cursor.fetchall()]
-                job.update({'skill': skills})
+                job.update({'skills': skills})
                 # experience
                 query = '''
                     SELECT experience FROM Experience
@@ -786,9 +786,9 @@ def main():
                                  limit=10
                                 )
     
-    # print(len(list(jobs)))
-    for i in jobs:
-        print(i)
+    pprint.pprint(list(jobs))
+    # for i in jobs:
+    #     print(i)
     # name = 'jobs'
     # with open(fr'{name}.txt', 'w', encoding='utf-8') as f:
     #     data = [j for j in jobs]

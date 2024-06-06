@@ -7,22 +7,13 @@ from ttkbootstrap.constants import *
 import ScrollableFrame as sf
 import chbox 
 import chart
-import os
-import sys
-# 獲取當前腳本所在目錄
-current_dir = os.path.dirname(os.path.abspath(__file__))
-# 獲取上層目錄
-parent_dir = os.path.dirname(current_dir)
-# 將上層目錄添加到sys.path
-sys.path.append(parent_dir)
-# 現在可以導入上層目錄中的模組或包
-from queryData.jobQuery import JobDatabase
+from jobQuery.jobAPI import JobDatabase
 
 class Gui:
     def __init__(self, root,db):
         self.root = root
         self.root.title("GUI")
-        self.root.geometry('1000x900+300+100')
+        self.root.geometry('1000x800+300+100')
         self.root.minsize(900, 800)
         self.root.maxsize(1800, 900)
         
@@ -61,7 +52,7 @@ class Gui:
 #tab2=========
         tool_dic={}         
         for i in data_list:
-            for j in i['tools']:
+            for j in i['tool']:
                 if j not in tool_dic:
                     tool_dic[j]=1
                 else:
@@ -284,7 +275,7 @@ class Gui:
 
         tool_dic={}
         for i in data_list:
-            for j in i['tools']:
+            for j in i['tool']:
                 if j not in tool_dic:
                     tool_dic[j]=1
                 else:
@@ -346,17 +337,11 @@ class Gui:
         sf.ScrollableFrame(self.tab1, data_list,salary_dic)
 
 if __name__ == "__main__":
-    # db = JobDatabase(
-    #     host='save-job-data.mysql.database.azure.com',
-    #     username='azureruser',
-    #     password='@C110152318',
-    #     database="jobdatabase"
-    # )
     db = JobDatabase(
-        host="localhost",
-        username="root",
-        password="9879",
-        database="jobDatabase"
+        host='save-job-data.mysql.database.azure.com',
+        username='azureruser',
+        password='@C110152318',
+        database="jobdatabase"
     )
     root = tb.Window(themename="vapor")  # 初始化視窗時設定主題
     gui = Gui(root,db)

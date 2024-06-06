@@ -1,6 +1,6 @@
-CREATE DATABASE `job104`;
+CREATE DATABASE `jobDatabase`;
 
-USE `job104`
+USE `jobDatabase`
 
 CREATE TABLE `job`(
     `job_id` INT AUTO_INCREMENT,
