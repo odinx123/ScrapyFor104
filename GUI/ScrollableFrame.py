@@ -47,15 +47,42 @@ class ScrollableFrame:
             frame.pack(fill="x", pady=5)
             if i != 0:
                 ttk.Label(frame, text='----------------------------------------------------------------------------------------').pack()
-            ttk.Label(frame, text=data_list[i]['company_title'], font=('Arial', 20, 'bold'), foreground='moccasin').pack()
-            ttk.Label(frame, text=data_list[i]['category'], font=('Arial', 15, 'bold'), foreground='tomato').pack()
+            company_title = data_list[i]['company_title']
+            max_length = 25  # 根据需要调整此值
+            if len(company_title) > max_length:
+                # 找到适当的位置插入换行符
+                split_index = max_length
+                for j in range(max_length, 0, -1):
+                    if company_title[j] == ' ':
+                        split_index = j
+                        break
+                else:
+                    # 如果没有找到空格，则在最大长度处断开
+                    split_index = max_length
+                
+                company_title = company_title[:split_index] + '\n' + company_title[split_index:].strip()
+
+            ttk.Label(frame, text=company_title, font=('Arial', 20, 'bold')).pack()#, foreground='moccasin').pack()
+            category_str=''
+            cate_count=0
+            for j in range(len(data_list[i]['category'])):
+                if cate_count+len(str(data_list[i]['category'][j]))>=25:
+                    category_str+='\n                '
+                if j!=len(data_list[i]['category'])-1:
+                    category_str+=str(data_list[i]['category'][j])
+                    category_str+=', '
+                    cate_count+=len(str(data_list[i]['category'][j]))
+                else:
+                    category_str+=str(data_list[i]['category'][j])
+                    cate_count+=len(str(data_list[i]['category'][j]))
+            ttk.Label(frame, text='職務類別 : '+category_str, font=('Arial', 15, 'bold')).pack()#, foreground='lawngreen').pack()
     #月薪
             if int(data_list[i]['min_salary']) == 0 and str(data_list[i]['salary_max']) == 'inf':
-                ttk.Label(frame, text='待遇面議', font=('Arial', 15, 'bold'), foreground='lawngreen').pack()
+                ttk.Label(frame, text='待遇面議', font=('Arial', 15, 'bold')).pack()#, foreground='tomato').pack()
             elif str(data_list[i]['salary_max']) == 'inf':
-                ttk.Label(frame, text=str(data_list[i]['min_salary']) + '以上', font=('Arial', 15, 'bold'), foreground='lawngreen').pack()
+                ttk.Label(frame, text=str(data_list[i]['min_salary']) + '以上', font=('Arial', 15, 'bold')).pack()#, foreground='tomato').pack()
             else:
-                ttk.Label(frame, text=str(data_list[i]['min_salary']) + '~' + str(data_list[i]['salary_max']), font=('Arial', 15, 'bold'), foreground='lawngreen').pack()
+                ttk.Label(frame, text=str(data_list[i]['min_salary']) + '~' + str(data_list[i]['salary_max']), font=('Arial', 15, 'bold')).pack()#, foreground='tomato').pack()
     #學歷        
             if data_list[i]['education']==[]:
                 ttk.Label(frame, text='學歷'+'不拘', font=('Arial', 15, 'bold')).pack()
@@ -67,14 +94,27 @@ class ScrollableFrame:
                 ttk.Label(frame, text='學歷 : '+ edu, font=('Arial', 15, 'bold')).pack()
     #工作經驗
             if data_list[i]['experience']==[]:
-                ttk.Label(frame, text='工作經驗'+'不拘', font=('Arial', 15, 'bold')).pack()
+                ttk.Label(frame, text='工作經驗'+'不拘', font=('Arial', 15, 'bold')).pack()#, foreground='darkorange').pack()
             else:    
-                ttk.Label(frame, text='工作經驗'+data_list[i]['experience'][0], font=('Arial', 15, 'bold')).pack()
+                ttk.Label(frame, text='工作經驗'+data_list[i]['experience'][0], font=('Arial', 15, 'bold')).pack()#, foreground='darkorange').pack()
+    #使用工具
+            tool_list=[] 
+            for data in data_list[i]['tool']:
+                tool_list.append(data)
+            cont=0
             tool='' 
-            for data in data_list[i]['tools']:
-                tool+=data
-                tool+=' '
-            ttk.Label(frame, text='使用工具 : '+tool, font=('Arial', 15, 'bold')).pack()
+            for j in range(len(tool_list)):
+                if cont+len(tool_list[j])>=25:
+                    tool+='\n                '
+                    cont=0
+                if j!=len(tool_list)-1:
+                    tool+=tool_list[j]
+                    tool+=', '
+                    cont+=len(tool_list[j])
+                else:
+                    tool+=tool_list[j]
+                    cont+=len(tool_list[j])
+            ttk.Label(frame, text='使用工具 : '+tool, font=('Arial', 15, 'bold')).pack()#, foreground='azure').pack()
             ttk.Button(frame, text='查看月薪落點', command=lambda i=i: self.show_bar_chart(i)).pack()
 
     def show_bar_chart(self, index):
@@ -91,11 +131,16 @@ class ScrollableFrame:
         else:
             max=int(item['salary_max'])//1000
         colors = ['aqua']*len(x)
-        if int(item['min_salary']) != 0 and str(item['salary_max']) != 'inf':  #待遇面議不顯示月薪落點
-            for i in range(len(x)):
-                if int(x[i])>=int(item['min_salary'])//1000 and int(x[i])<=max:
-                    colors[i]='red'
-        title = item['category']
+        #if int(item['min_salary']) != 0 and str(item['salary_max']) != 'inf':  #待遇面議不顯示月薪落點
+        for i in range(len(x)):
+            if int(x[i])>=int(item['min_salary'])//1000 and int(x[i])<=max:
+                colors[i]='red'
+        title=[]
+        for i in item['category']:
+            if len(title)<=2:
+                title.append(i)
+            else:
+                break
         
         fig, ax = plt.subplots(facecolor='black')  # 設定圖形背景顏色為黑色
         ax.set_facecolor('black')  # 將軸的背景顏色設定為黑色
@@ -103,7 +148,7 @@ class ScrollableFrame:
         category = ' , '.join(title)
         ax.set_title(category, fontsize=20, color='aqua')  # 設定標題顏色
         ax.set_xlabel('月薪(k)', color='aqua')  # 設定x軸標籤顏色
-        ax.set_ylabel('職缺數(%)', color='aqua')  # 設定y軸標籤顏色
+        ax.set_ylabel('數量', color='aqua',rotation=0, labelpad=20)  # 設定y軸標籤顏色
         ax.set_xticks([10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150])
         ax.set_xticklabels(['10', '20', '30', '40', '50', '60', '70', '80', '90', '100', '110', '120', '130', '140', '150'], color='white')  # 设置x轴刻度标签颜色
         ax.tick_params(axis='x', colors='aqua')  # 設定x軸刻度顏色

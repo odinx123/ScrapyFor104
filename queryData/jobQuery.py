@@ -491,7 +491,7 @@ class JobDatabase:
                 '''
                 cursor.execute(query, (job_id,))
                 tools = [tool[0] for tool in cursor.fetchall()]
-                job.update({'tools': tools})
+                job.update({'tool': tools})
                 # category
                 query = '''
                     SELECT category_name FROM Categories
@@ -513,7 +513,7 @@ class JobDatabase:
                 '''
                 cursor.execute(query, (job_id,))
                 skills = [skill[0] for skill in cursor.fetchall()]
-                job.update({'skills': skills})
+                job.update({'skill': skills})
                 # experience
                 query = '''
                     SELECT experience FROM Experience
