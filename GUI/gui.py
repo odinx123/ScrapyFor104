@@ -7,12 +7,25 @@ from ttkbootstrap.constants import *
 import ScrollableFrame as sf
 import chbox 
 import chart
-from jobQuery.jobAPI import JobDatabase
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import random
 
+import sys
+import os
+# 獲取當前腳本所在目錄
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# 獲取上層目錄
+parent_dir = os.path.dirname(current_dir)
+# 將上層目錄添加到sys.path
+sys.path.append(parent_dir)
+# 現在可以導入上層目錄中的模組或包
+from queryData.jobQuery import JobDatabase
+
+# 獲取當前腳本所在的目錄
+script_dir = os.path.dirname(os.path.abspath(__file__))
+image_dir = os.path.join(script_dir, 'images\\')
 
 class Gui:
     def __init__(self, root,db):
@@ -60,7 +73,7 @@ class Gui:
 #tab3=========
         edu_dic={'不拘':0, '博士':0, '碩士':0, '大學':0, '專科':0,  '高中':0, '高中以下':0}
         for i in data_list:
-            if i['education']==[]:
+            if not i['education']:
                 edu_dic['不拘']+=1
                 continue
             for j in i['education']:
@@ -168,8 +181,8 @@ class Gui:
         self.button_frame.pack(side='right', fill='y')
 
         # image
-        self.button_icon1 = tk.PhotoImage(file="C:\\Users\\user\\Desktop\\guui\\button_icon.png")
-        self.button_icon2 = tk.PhotoImage(file="C:\\Users\\user\\Desktop\\guui\\button_icon2.png")
+        self.button_icon1 = tk.PhotoImage(file=image_dir+"button_icon.png")
+        self.button_icon2 = tk.PhotoImage(file=image_dir+"button_icon2.png")
         self.option_button = tk.Button(self.button_frame, text="filter", command=self.toggle_options)
         self.option_button.config(image=self.button_icon1)
         self.option_button.pack(fill='y',expand=True)
@@ -237,7 +250,7 @@ class Gui:
         for i in self.tool_menu:
             self.tool_option.add_checkbox(i)
 
-        self.search_icon = tk.PhotoImage(file="C:\\Users\\user\\Desktop\\guui\\search_icon9.png")
+        self.search_icon = tk.PhotoImage(file=image_dir+"search_icon9.png")
         self.search_btn = ttk.Button(self.option_frame, text="確定", style="success.Outline.TButton", command=self.update_chart)
         self.search_btn.config(image=self.search_icon)
         self.search_btn.pack()
@@ -431,11 +444,11 @@ class Gui:
 if __name__ == "__main__":
     db = JobDatabase(
         host='localhost',
-        username='',
-        password='',
+        username='root',
+        password='9879',
         database="jobdatabase"
     )
     root = tb.Window(themename="vapor")  # 初始化視窗時設定主題
-    gui = Gui(root,db)
+    gui = Gui(root, db)
     root.protocol("WM_DELETE_WINDOW", root.quit)
     root.mainloop()
