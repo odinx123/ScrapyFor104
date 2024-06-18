@@ -5,9 +5,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import Toplevel
 
 class ScrollableFrame:
-    def __init__(self, parent_frame, data_list, salary_dic, *args, **kwargs):
+    def __init__(self, parent_frame, data_list_i, salary_dic, *args, **kwargs):
         self.parent_frame = parent_frame
-        self.data_list = data_list  # Store data list for later use
+        self.data_list = data_list_i  #用來做月薪分布圖
+        data_list=data_list_i[:70]   #用來顯示資訊  只顯示前70個
         self.canvas = tk.Canvas(parent_frame)
         self.scrollbar = ttk.Scrollbar(parent_frame, orient="vertical", command=self.canvas.yview)
         self.scrollable_frame = tk.Frame(self.canvas)
@@ -25,11 +26,9 @@ class ScrollableFrame:
         self.canvas.pack(side="left", fill="both", expand=True)
         self.scrollbar.pack(side="right", fill="y")
 
-        # Bind the mouse wheel to the canvas for scrolling
         self.canvas.bind("<Enter>", self._bind_mousewheel)
         self.canvas.bind("<Leave>", self._unbind_mousewheel)
 
-        # Display the data list on the scrollable frame
         self.display_data(data_list)
 
     def _bind_mousewheel(self, event):
@@ -48,21 +47,35 @@ class ScrollableFrame:
             if i != 0:
                 ttk.Label(frame, text='----------------------------------------------------------------------------------------').pack()
             company_title = data_list[i]['company_title']
-            max_length = 25  # 根据需要调整此值
+            max_length = 25  #最大長度
             if len(company_title) > max_length:
-                # 找到适当的位置插入换行符
+                # 找到適當的位置插入換行
                 split_index = max_length
                 for j in range(max_length, 0, -1):
                     if company_title[j] == ' ':
                         split_index = j
                         break
                 else:
-                    # 如果没有找到空格，则在最大长度处断开
+                    # 如果没有找到空格，在最大長度處斷開
                     split_index = max_length
                 
                 company_title = company_title[:split_index] + '\n' + company_title[split_index:].strip()
 
             ttk.Label(frame, text=company_title, font=('Arial', 20, 'bold')).pack()#, foreground='moccasin').pack()
+            job_name=str(data_list[i]['job_title'])
+            max_length = 25  
+            if len(job_name) > max_length:
+                split_index = max_length
+                for j in range(max_length, 0, -1):
+                    if job_name[j] == ' ':
+                        split_index = j
+                        break
+                else:
+                    split_index = max_length
+                
+                job_name = job_name[:split_index] + '\n' + job_name[split_index:].strip()
+
+            ttk.Label(frame, text='工作名稱 : '+job_name, font=('Arial', 15, 'bold')).pack()#, foreground='lawngreen').pack()
             category_str=''
             cate_count=0
             for j in range(len(data_list[i]['category'])):
@@ -120,9 +133,8 @@ class ScrollableFrame:
     def show_bar_chart(self, index):
         plt.rc("font", family="Microsoft Jhenghei")
         new_window = Toplevel(self.parent_frame)
-        new_window.title('Bar Chart')
+        new_window.title('月薪落點')
 
-        # Extract data for the bar chart from the selected item
         item = self.data_list[index]
         x = list(self.salary_dic.keys())
         y = list(self.salary_dic.values())
@@ -130,33 +142,28 @@ class ScrollableFrame:
             max=200
         else:
             max=int(item['salary_max'])//1000
-        colors = ['aqua']*len(x)
-        #if int(item['min_salary']) != 0 and str(item['salary_max']) != 'inf':  #待遇面議不顯示月薪落點
+        colors = ['dodgerblue']*len(x)
         for i in range(len(x)):
-            if int(x[i])>=int(item['min_salary'])//1000 and int(x[i])<=max:
-                colors[i]='red'
-        title=[]
-        for i in item['category']:
-            if len(title)<=2:
-                title.append(i)
-            else:
+            if int(item['min_salary'])==0 and str(item['salary_max'])=='inf': #待遇面議不顯示月薪落點
                 break
-        
-        fig, ax = plt.subplots(facecolor='black')  # 設定圖形背景顏色為黑色
-        ax.set_facecolor('black')  # 將軸的背景顏色設定為黑色
-        ax.bar(x, y, width=10, color=colors)
-        category = ' , '.join(title)
-        ax.set_title(category, fontsize=20, color='aqua')  # 設定標題顏色
-        ax.set_xlabel('月薪(k)', color='aqua')  # 設定x軸標籤顏色
-        ax.set_ylabel('數量', color='aqua',rotation=0, labelpad=20)  # 設定y軸標籤顏色
+            elif int(x[i])>=int(item['min_salary'])//1000 and int(x[i])<=max:
+                colors[i]='red'
+
+        job_name=item['job_title']
+        fig, ax = plt.subplots(facecolor='lightcyan')  # 設定圖形背景顏色
+        ax.set_facecolor('lightcyan')  # 軸的背景顏色
+        ax.bar(x, y, width=10, color=colors, edgecolor='lightcyan')
+        ax.set_title(job_name, fontsize=20, color='navy')  # 標題顏色
+        ax.set_xlabel('月薪(k)', color='navy')  # x軸標籤顏色
+        ax.set_ylabel('數量', color='aqua',rotation=0, labelpad=20)  # y軸標籤顏色
         ax.set_xticks([10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150])
-        ax.set_xticklabels(['10', '20', '30', '40', '50', '60', '70', '80', '90', '100', '110', '120', '130', '140', '150'], color='white')  # 设置x轴刻度标签颜色
-        ax.tick_params(axis='x', colors='aqua')  # 設定x軸刻度顏色
-        ax.tick_params(axis='y', colors='aqua')  # 設定y軸刻度顏色
-        ax.spines['bottom'].set_color('aqua')
-        ax.spines['top'].set_color('aqua')
-        ax.spines['right'].set_color('aqua')
-        ax.spines['left'].set_color('aqua')
+        ax.set_xticklabels(['10', '20', '30', '40', '50', '60', '70', '80', '90', '100', '110', '120', '130', '140', '150'], color='white')  # x軸刻度標籤颜色
+        ax.tick_params(axis='x', colors='navy')  # x軸刻度顏色
+        ax.tick_params(axis='y', colors='navy')  # y軸刻度顏色
+        ax.spines['bottom'].set_color('navy')
+        ax.spines['top'].set_color('navy')
+        ax.spines['right'].set_color('navy')
+        ax.spines['left'].set_color('navy')
 
         canvas = FigureCanvasTkAgg(fig, master=new_window)
         canvas.draw()

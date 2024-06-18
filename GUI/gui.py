@@ -7,11 +7,6 @@ from ttkbootstrap.constants import *
 import ScrollableFrame as sf
 import chbox 
 import chart
-import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-import random
-
 import sys
 import os
 # 獲取當前腳本所在目錄
@@ -22,11 +17,19 @@ parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 # 現在可以導入上層目錄中的模組或包
 from queryData.jobQuery import JobDatabase
-
+import random
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import random
+import sys
+import os
 # 獲取當前腳本所在的目錄
 script_dir = os.path.dirname(os.path.abspath(__file__))
-image_dir = os.path.join(script_dir, 'images\\')
-
+image_dir = os.path.join(script_dir, 'images')
+file_btn1= os.path.join(image_dir, "button_icon.png")
+file_btn2= os.path.join(image_dir, "button_icon2.png")
+file_btn3= os.path.join(image_dir, "search_icon9.png")
 class Gui:
     def __init__(self, root,db):
         self.root = root
@@ -73,14 +76,14 @@ class Gui:
 #tab3=========
         edu_dic={'不拘':0, '博士':0, '碩士':0, '大學':0, '專科':0,  '高中':0, '高中以下':0}
         for i in data_list:
-            if not i['education']:
+            if i['education']==[]:
                 edu_dic['不拘']+=1
                 continue
             for j in i['education']:
                 edu_dic[j]+=1
         edu_labels = [k for k ,v in edu_dic.items() if v!=0]
         edu_data = [v for k,v in edu_dic.items() if v!=0] 
-        chart.create_pie_chart(self.tab3, edu_labels, edu_data, ['學歷要求'])
+        chart.create_bar_chart_ForExp(self.tab3, edu_labels, edu_data, ['學歷要求'])
 #tab4==========
         salary_dic={15:0, 25:0, 35:0, 45:0, 55:0, 65:0, 75:0, 85:0,95:0,105:0,115:0,125:0,135:0,145:0} 
         for i in data_list:
@@ -181,8 +184,8 @@ class Gui:
         self.button_frame.pack(side='right', fill='y')
 
         # image
-        self.button_icon1 = tk.PhotoImage(file=image_dir+"button_icon.png")
-        self.button_icon2 = tk.PhotoImage(file=image_dir+"button_icon2.png")
+        self.button_icon1 = tk.PhotoImage(file=file_btn1)
+        self.button_icon2 = tk.PhotoImage(file=file_btn2)
         self.option_button = tk.Button(self.button_frame, text="filter", command=self.toggle_options)
         self.option_button.config(image=self.button_icon1)
         self.option_button.pack(fill='y',expand=True)
@@ -226,8 +229,6 @@ class Gui:
         )
         self.salary_meter2.pack()
         self.start_updating_meter2_min()
-        
-   
         #==============
         self.job_label = tk.Label(self.option_frame, text='職務類別', bg='gray',font=('Arial',15,'bold'))
         self.job_label.pack()
@@ -250,7 +251,7 @@ class Gui:
         for i in self.tool_menu:
             self.tool_option.add_checkbox(i)
 
-        self.search_icon = tk.PhotoImage(file=image_dir+"search_icon9.png")
+        self.search_icon = tk.PhotoImage(file=file_btn3)
         self.search_btn = ttk.Button(self.option_frame, text="確定", style="success.Outline.TButton", command=self.update_chart)
         self.search_btn.config(image=self.search_icon)
         self.search_btn.pack()
@@ -354,7 +355,7 @@ class Gui:
         for widget in self.tab3.winfo_children(): 
             widget.destroy()
  
-        edu_dic={'不拘':0, '博士':0, '碩士':0, '高中':0, '大學':0, '專科':0, '高中以下':0}
+        edu_dic={'不拘':0, '博士':0, '碩士':0, '大學':0, '高中':0, '專科':0, '高中以下':0}
         for i in data_list:
             if i['education']==[]:
                 edu_dic['不拘']+=1
@@ -364,7 +365,7 @@ class Gui:
 
         edu_labels = [k for k ,v in edu_dic.items() if v!=0]
         edu_data = [v for k,v in edu_dic.items() if v!=0] 
-        chart.create_pie_chart(self.tab3, edu_labels, edu_data, category)
+        chart.create_bar_chart_ForExp(self.tab3, edu_labels, edu_data, ['學歷要求'])
 #月薪  
         for widget in self.tab4.winfo_children():   
             widget.destroy()
@@ -378,7 +379,7 @@ class Gui:
                         salary_dic[j]+=1
         salary_num=list(salary_dic.values())
         salary=list(salary_dic.keys())
-        chart.create_bar_chart_ForSalary(self.tab4, salary, salary_num, category)
+        chart.create_bar_chart_ForSalary(self.tab4, salary, salary_num, ['薪資待遇'])
 #工作經驗
         for widget in self.tab5.winfo_children():   
             widget.destroy()
@@ -392,7 +393,7 @@ class Gui:
 
         exp_labels = [k for k ,v in exp_dic.items() if v!=0]
         exp_data = [v for k,v in exp_dic.items() if v!=0] 
-        chart.create_bar_chart_ForExp(self.tab5, exp_labels, exp_data, category)
+        chart.create_bar_chart_ForExp(self.tab5, exp_labels, exp_data, ['工作經驗'])
 #使用工具        
         for widget in self.tab6.winfo_children(): 
             widget.destroy()
@@ -409,7 +410,7 @@ class Gui:
                     continue
         tool_x=list(tool_dic.keys())    
         tool_y=list(tool_dic.values())    
-        chart.create_bar_chart_ForTool(self.tab6, tool_x, tool_y, category)
+        chart.create_bar_chart_ForTool(self.tab6, tool_x, tool_y, ['使用工具'])
 #更新職缺資訊        
         for widget in self.tab1.winfo_children():
             widget.destroy()
@@ -421,21 +422,22 @@ class Gui:
 
         
 
-        job_id_index=random.randint(0,len(data_list))
+        job_id_index=random.randint(0,len(data_list)-1)
         job_id=data_list[job_id_index]['job_id']
         self.recom_job_id_list[self.next]=job_id
         if self.next==4:
             self.next=0
         else:
             self.next+=1
-        #print("recom_job_id_list")
+       # print("recom_job_id_list")
         #print(self.recom_job_id_list)
         job_id_list=[] #要丟進recommend的id
         for i in self.recom_job_id_list:
             if i!=0:
                 job_id_list+=self.recommend(i,self.cosine_sim)
+        job_id_list=list(set(job_id_list))
        # print('job_id_list')
-       # print(job_id_list)
+        #print(job_id_list)
         recom_data_list=[]#推薦職缺資訊 
         for i in job_id_list:
             recom_data_list.append(db.get_jobInfo_by_id(i))
@@ -449,6 +451,6 @@ if __name__ == "__main__":
         database="jobdatabase"
     )
     root = tb.Window(themename="vapor")  # 初始化視窗時設定主題
-    gui = Gui(root, db)
+    gui = Gui(root,db)
     root.protocol("WM_DELETE_WINDOW", root.quit)
     root.mainloop()
