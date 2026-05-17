@@ -1,14 +1,20 @@
 import tkinter as tk
+import os
+from pathlib import Path
 from tkinter import ttk
 import ttkbootstrap as tb
 from PIL import Image
 Image.CUBIC = Image.BICUBIC
 from ttkbootstrap.constants import *
+
+_mpl_config_dir = Path(__file__).resolve().parent.parent / ".cache" / "matplotlib"
+_mpl_config_dir.mkdir(parents=True, exist_ok=True)
+os.environ.setdefault("MPLCONFIGDIR", str(_mpl_config_dir))
+
 import ScrollableFrame as sf
 import chbox 
 import chart
 import sys
-import os
 # 獲取當前腳本所在目錄
 current_dir = os.path.dirname(os.path.abspath(__file__))
 # 獲取上層目錄
@@ -17,13 +23,13 @@ parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 # 現在可以導入上層目錄中的模組或包
 from queryData.jobQuery import JobDatabase
+from app_config import APP_DATABASE, db_config
 import random
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import random
 import sys
-import os
 # 獲取當前腳本所在的目錄
 script_dir = os.path.dirname(os.path.abspath(__file__))
 image_dir = os.path.join(script_dir, 'images')
@@ -32,6 +38,7 @@ file_btn2= os.path.join(image_dir, "button_icon2.png")
 file_btn3= os.path.join(image_dir, "search_icon9.png")
 class Gui:
     def __init__(self, root,db):
+        self.db = db
         self.root = root
         self.root.title("GUI")
         self.root.geometry('1000x900+300+50')
@@ -50,9 +57,7 @@ class Gui:
 # ======創建分頁=========
         # 創建 tab1
         self.tab1 = ttk.Frame(self.notebook)
-        data_list = []
-        for i in range(1,10):
-            data_list.append(db.get_jobInfo_by_id(i))
+        data_list = self.db.get_jobInfos(limit=70)
 
         self.notebook.add(self.tab1, text="職缺資訊")     
         # 創建 tab2
@@ -131,7 +136,7 @@ class Gui:
         # 新增主題選擇器
         #self.create_theme_selector()
 #推薦
-        self.jobs = db.get_jobInfo_by_filter(
+        self.jobs = self.db.get_jobInfo_by_filter(
             category=None,
             skill=None,
             education=None,
@@ -145,37 +150,48 @@ class Gui:
         self.jobs = [j for j in self.jobs]
         self.jobs = pd.DataFrame(self.jobs)
 
-        # 將列表轉換為字符串
-        self.jobs['category'] = self.jobs['category'].apply(lambda x: ' '.join(x))
-        self.jobs['skill'] = self.jobs['skill'].apply(lambda x: ' '.join(x))
-        self.jobs['tool'] = self.jobs['tool'].apply(lambda x: ' '.join(x))
+        if not self.jobs.empty:
+            # 將列表轉換為字符串
+            self.jobs['category'] = self.jobs['category'].apply(lambda x: ' '.join(x))
+            self.jobs['skill'] = self.jobs['skill'].apply(lambda x: ' '.join(x))
+            self.jobs['tool'] = self.jobs['tool'].apply(lambda x: ' '.join(x))
 
-        # 將類別、技能和工具合併為一個文本列
-        self.jobs['combined'] = self.jobs['category'] + ' ' + self.jobs['skill'] + ' ' + self.jobs['tool']
+            # 將類別、技能和工具合併為一個文本列
+            self.jobs['combined'] = self.jobs['category'] + ' ' + self.jobs['skill'] + ' ' + self.jobs['tool']
 
-        # 計算TF-IDF特徵
-        tfidf = TfidfVectorizer()
-        tfidf_matrix = tfidf.fit_transform(self.jobs['combined'])
+            # 計算TF-IDF特徵
+            tfidf = TfidfVectorizer()
+            tfidf_matrix = tfidf.fit_transform(self.jobs['combined'])
 
-        # 計算餘弦相似度
-        self.cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
+            # 計算餘弦相似度
+            self.cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
+        else:
+            self.cosine_sim = None
 #tab2=========
-        job_id=data_list[0]['job_id']
-        job_id_list=self.recommend(job_id,self.cosine_sim)
-        recom_data_list=[]#推薦職缺資訊
         self.recom_job_id_list=[0,0,0,0,0]
         self.next=0
-        for i in job_id_list:
-            recom_data_list.append(db.get_jobInfo_by_id(i))
+        if data_list and self.cosine_sim is not None:
+            job_id=data_list[0]['job_id']
+            job_id_list=self.recommend(job_id,self.cosine_sim)
+            recom_data_list=self.db.get_jobInfos_by_ids(job_id_list)
+        else:
+            recom_data_list=[]#推薦職缺資訊
         sf.ScrollableFrame(self.tab2, recom_data_list,salary_dic)
         
     
     def recommend(self, job_id, cosine_sim, num_of_jobs=2):
-        idx = self.jobs[self.jobs['job_id'] == job_id].index[0]  # 獲取工作的索引(dataframe的index)
+        if cosine_sim is None or self.jobs.empty:
+            return []
+        matched_indexes = self.jobs[self.jobs['job_id'] == job_id].index
+        if matched_indexes.empty:
+            return []
+        idx = matched_indexes[0]  # 獲取工作的索引(dataframe的index)
         sim_scores = list(enumerate(cosine_sim[idx]))  # 獲取該工作的所有相似度
         sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
         sim_scores = sim_scores[1:num_of_jobs*2]  # 取前5個相似的工作，0是自己
-        job_indices = random.sample([i[0] for i in sim_scores], num_of_jobs)
+        if not sim_scores:
+            return []
+        job_indices = random.sample([i[0] for i in sim_scores], min(num_of_jobs, len(sim_scores)))
         return [i for i in self.jobs['job_id'].iloc[job_indices]]
     
     def create_option_menu(self):
@@ -236,7 +252,7 @@ class Gui:
         self.job_frame=tk.Frame(self.option_frame,width=200,height=100,bg='red',bd=1,relief='groove')
         self.job_frame.pack()
         self.job_menu =[]
-        self.job_menu = db.get_all_categories()
+        self.job_menu = self.db.get_all_categories() or []
         self.job_option=chbox.ScrollableCheckboxFrame(self.job_frame,200,100)
         for i in self.job_menu:
             self.job_option.add_checkbox(i)
@@ -246,7 +262,7 @@ class Gui:
         self.tool_frame=tk.Frame(self.option_frame,width=200,height=100,bd=1,relief='groove')
         self.tool_frame.pack()
         self.tool_menu = []
-        self.tool_menu = db.get_all_tools()
+        self.tool_menu = self.db.get_all_tools() or []
         self.tool_option=chbox.ScrollableCheckboxFrame(self.tool_frame,200,100)
         for i in self.tool_menu:
             self.tool_option.add_checkbox(i)
@@ -347,7 +363,7 @@ class Gui:
         tool=requirements['tool']
 #取得職缺資訊
         data_list = []
-        jobs = db.get_jobInfo_by_filter(category=category_filter, skill=None, education=edu, experience=exp, tool=tool,
+        jobs = self.db.get_jobInfo_by_filter(category=category_filter, skill=None, education=edu, experience=exp, tool=tool,
             days=None, min_salary=min_salary, max_salary=max_salary)#,limit=10)
         for i, j in enumerate(jobs):
             data_list.append(j)
@@ -422,34 +438,26 @@ class Gui:
 
         
 
-        job_id_index=random.randint(0,len(data_list)-1)
-        job_id=data_list[job_id_index]['job_id']
-        self.recom_job_id_list[self.next]=job_id
-        if self.next==4:
-            self.next=0
+        if data_list and self.cosine_sim is not None:
+            job_id_index=random.randint(0,len(data_list)-1)
+            job_id=data_list[job_id_index]['job_id']
+            self.recom_job_id_list[self.next]=job_id
+            if self.next==4:
+                self.next=0
+            else:
+                self.next+=1
+            job_id_list=[] #要丟進recommend的id
+            for i in self.recom_job_id_list:
+                if i!=0:
+                    job_id_list+=self.recommend(i,self.cosine_sim)
+            job_id_list=list(set(job_id_list))
+            recom_data_list=self.db.get_jobInfos_by_ids(job_id_list)#推薦職缺資訊
         else:
-            self.next+=1
-       # print("recom_job_id_list")
-        #print(self.recom_job_id_list)
-        job_id_list=[] #要丟進recommend的id
-        for i in self.recom_job_id_list:
-            if i!=0:
-                job_id_list+=self.recommend(i,self.cosine_sim)
-        job_id_list=list(set(job_id_list))
-       # print('job_id_list')
-        #print(job_id_list)
-        recom_data_list=[]#推薦職缺資訊 
-        for i in job_id_list:
-            recom_data_list.append(db.get_jobInfo_by_id(i))
+            recom_data_list=[]
         sf.ScrollableFrame(self.tab2, recom_data_list,salary_dic)
 
 if __name__ == "__main__":
-    db = JobDatabase(
-        host='localhost',
-        username='root',
-        password='9879',
-        database="jobdatabase"
-    )
+    db = JobDatabase(**db_config(APP_DATABASE))
     root = tb.Window(themename="vapor")  # 初始化視窗時設定主題
     gui = Gui(root,db)
     root.protocol("WM_DELETE_WINDOW", root.quit)

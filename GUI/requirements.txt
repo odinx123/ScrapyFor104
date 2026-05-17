@@ -1,2 +1,1 @@
-ttkbootstrap
-matplotlib
+﻿-r ../requirements.txt

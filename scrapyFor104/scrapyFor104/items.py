@@ -8,6 +8,8 @@ import scrapy
 
 class Scrapyfor104Item(scrapy.Item):
     # for job
+    source_job_key = scrapy.Field()
+    source_url = scrapy.Field()
     job_title = scrapy.Field()  # ok
     company = scrapy.Field()  # ok
     salary = scrapy.Field()  # ok

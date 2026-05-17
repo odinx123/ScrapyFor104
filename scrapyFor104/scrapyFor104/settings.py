@@ -1,3 +1,5 @@
+import os
+
 # Scrapy settings for scrapyFor104 project
 #
 # For simplicity, this file contains only settings considered important or
@@ -20,12 +22,13 @@ NEWSPIDER_MODULE = "scrapyFor104.spiders"
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = int(os.getenv("SCRAPY104_CONCURRENT_REQUESTS", "32"))
+CONCURRENT_REQUESTS_PER_DOMAIN = int(os.getenv("SCRAPY104_CONCURRENT_REQUESTS_PER_DOMAIN", "8"))
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 2.5
+DOWNLOAD_DELAY = float(os.getenv("SCRAPY104_DOWNLOAD_DELAY", "0.5"))
 # The download delay setting will honor only one of:
 # CONCURRENT_REQUESTS_PER_DOMAIN = 4
 # CONCURRENT_REQUESTS_PER_IP = 4
@@ -69,15 +72,13 @@ DOWNLOAD_DELAY = 2.5
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 # 數字小的優先0-1000
 
-# import os
-# SQL_USER = os.environ["USER_NAME"]
-# SQL_HOST = os.environ["HOST"]
-# SQL_PASSWORD = os.environ["PASSWD"]
-SQL_USER = 'root'
-SQL_HOST = 'localhost'
-SQL_PASSWORD = '9879'
+SQL_USER = os.getenv("SCRAPY104_DB_USER", "root")
+SQL_HOST = os.getenv("SCRAPY104_DB_HOST", "127.0.0.1")
+SQL_PORT = int(os.getenv("SCRAPY104_DB_PORT", "3306"))
+SQL_PASSWORD = os.getenv("SCRAPY104_DB_PASSWORD", "9879")
 
-SQL_JOB104DATABASE = 'job104'
+SQL_JOB104DATABASE = os.getenv("SCRAPY104_CRAWL_DB", "job104")
+MYSQL_PIPELINE_BATCH_SIZE = int(os.getenv("SCRAPY104_PIPELINE_BATCH_SIZE", "100"))
 
 ITEM_PIPELINES = {
    "scrapyFor104.pipelines.Scrapyfor104Pipeline": 300,

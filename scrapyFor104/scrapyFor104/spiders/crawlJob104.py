@@ -1,113 +1,144 @@
-from scrapyFor104.items import Scrapyfor104Item
-from bs4 import BeautifulSoup
-import scrapy
-import re
 import json
-# import requests
+import os
+import re
+from pathlib import Path
+from urllib.parse import urlencode, urlparse
+
+import scrapy
+
+from scrapyFor104.items import Scrapyfor104Item
+
 
 class Crawljob104Spider(scrapy.Spider):
     name = "crawlJob104"
-    head = {
-            'content-type': 'text/html; charset=UTF-8',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-            'Referer': 'https://www.104.com.tw/jobs/search/'
-        }
-    def start_requests(self):
-        # https://static.104.com.tw/category-tool/json/Area.json    地址網址
-        # https://static.104.com.tw/category-tool/json/JobCat.json  職務類別
-        # 讀取本地的JSON文件
-        with open('category.json', 'r', encoding='utf-8') as file:
+
+    search_api = "https://www.104.com.tw/jobs/search/api/jobs"
+    detail_api = "https://www.104.com.tw/job/ajax/content/{job_id}"
+
+    headers = {
+        "Accept": "application/json, text/plain, */*",
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0.0.0 Safari/537.36"
+        ),
+        "Referer": "https://www.104.com.tw/jobs/search/",
+    }
+
+    async def start(self):
+        for request in self.build_start_requests():
+            yield request
+
+    def build_start_requests(self):
+        category_file = Path(__file__).resolve().parents[2] / "category.json"
+        with category_file.open("r", encoding="utf-8") as file:
             job_cat_data = json.load(file)
 
-        no_list = self.extract_job_cat_nos(job_cat_data)
+        start_page = int(os.getenv("SCRAPY104_START_PAGE", "1"))
+        end_page = int(os.getenv("SCRAPY104_END_PAGE", "2"))
+        jobcat_prefix = os.getenv("SCRAPY104_JOBCAT_PREFIX", "2007")
 
-        start_page = 1
-        end_page = 2
-        for no in no_list:
-            if no[0:4] != '2007': continue  # 只抓取資訊軟體相關職缺
-            
+        for jobcat in self.extract_job_cat_nos(job_cat_data):
+            if not jobcat.startswith(jobcat_prefix):
+                continue
+
             for page in range(start_page, end_page + 1):
-                url = f'https://www.104.com.tw/jobs/search/?jobcat={no}&page={page}'
-                yield scrapy.Request(url=url,
-                                     headers=self.head,
-                                     callback=self.parse,
-                                    )
+                query = urlencode(
+                    {
+                        "jobcat": jobcat,
+                        "page": page,
+                        "jobsource": "2018indexpoc",
+                        "mode": "s",
+                    }
+                )
+                yield scrapy.Request(
+                    url=f"{self.search_api}?{query}",
+                    headers=self.headers,
+                    callback=self.parse_search,
+                    meta={"jobcat": jobcat, "page": page},
+                )
 
     def extract_job_cat_nos(self, data):
         no_list = []
         if isinstance(data, dict):
-            if 'n' in data:
-                for item in data['n']:
+            if "n" in data:
+                for item in data["n"]:
                     no_list.extend(self.extract_job_cat_nos(item))
-            elif 'no' in data:  # 有n就不要no(不要大類別的no)
-                no_list.append(data['no'])
+            elif "no" in data:
+                no_list.append(data["no"])
         elif isinstance(data, list):
             for item in data:
                 no_list.extend(self.extract_job_cat_nos(item))
         return no_list
 
-    def parse(self, response):
-        soup = BeautifulSoup(response.body, 'html.parser')
-
-        if len(soup.select('.b-center.b-txt--center > p[class=b-tit]')) > 0:
+    def parse_search(self, response):
+        try:
+            payload = json.loads(response.text)
+        except json.JSONDecodeError as exc:
+            self.logger.warning("Search API returned non-JSON response: %s (%s)", response.url, exc)
             return
 
-        targets =  soup.find_all(attrs={'data-qa-id':'jobSeachResultTitle'})
-        
-        re_compile = re.compile(r'/job/([^?]+)')
-        for tag in targets:
-            href = tag['href']
-            job_id = re_compile.search(href).group(1)
-            
-            """取得職缺詳細資料"""
-            url = f'https://www.104.com.tw/job/ajax/content/{job_id}'
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.92 Safari/537.36',
-                'Referer': f'https://www.104.com.tw/job/{job_id}'
-            }
-            
-            yield scrapy.Request(url=url,
-                                 headers=headers,
-                                 callback=self.parseEveryJob,
-                                )
-    
-    def parseEveryJob(self, response):
-        self.log(f'Parsing job details from {response.url}')
+        jobs = payload.get("data") or []
+        if not jobs:
+            self.logger.info(
+                "No jobs found for jobcat=%s page=%s",
+                response.meta.get("jobcat"),
+                response.meta.get("page"),
+            )
+            return
+
+        for job in jobs:
+            job_id = self.extract_job_id(job)
+            if not job_id:
+                self.logger.debug("Skipped search result without job id: %s", job)
+                continue
+
+            yield scrapy.Request(
+                url=self.detail_api.format(job_id=job_id),
+                headers={
+                    **self.headers,
+                    "Referer": f"https://www.104.com.tw/job/{job_id}",
+                },
+                callback=self.parse_every_job,
+                meta={"job_id": job_id},
+            )
+
+    def extract_job_id(self, job):
+        job_url = (job.get("link") or {}).get("job") or job.get("jobUrl") or ""
+        match = re.search(r"/job/([^/?#]+)", urlparse(job_url).path)
+        if match:
+            return match.group(1)
+        return None
+
+    def parse_every_job(self, response):
+        try:
+            job_data = json.loads(response.text)["data"]
+        except (json.JSONDecodeError, KeyError) as exc:
+            self.logger.warning("Detail API parse failed: %s (%s)", response.url, exc)
+            return
+
+        header = job_data.get("header") or {}
+        condition = job_data.get("condition") or {}
+        detail = job_data.get("jobDetail") or {}
 
         item = Scrapyfor104Item()
-        
-        job_data = json.loads(response.text)['data']
-
-        header = job_data['header']
-        item['job_title'] = header['jobName']
-        item['update_time'] = header['appearDate']
-        item['company'] = header['custName']
-
-        condition = job_data['condition']
-
-        item['exp'] = condition['workExp']
-        item['edu'] = condition['edu'].split('、')
-
-        sk_list = []
-        for sk in condition['skill']:
-            sk_list.append(sk['description'])
-        item['skill'] = sk_list
-
-        tools = []
-        for t in condition['specialty']:
-            tools.append(t['description'])
-        item['specialty_tool'] = tools
-
-        detail = job_data['jobDetail']
-
-        categories = []
-        for c in detail['jobCategory']:
-            categories.append(c['description'])
-        item['category_name'] = categories
-
-        item['salary'] = detail['salary']
-        item['address'] = detail['addressRegion'] + detail['addressDetail']
-
-        item['industry'] = job_data['industry']
+        item["source_job_key"] = response.meta.get("job_id", "")
+        item["source_url"] = f"https://www.104.com.tw/job/{response.meta.get('job_id', '')}"
+        item["job_title"] = header.get("jobName", "")
+        item["update_time"] = header.get("appearDate", "")
+        item["company"] = header.get("custName", "")
+        item["exp"] = condition.get("workExp", "")
+        item["edu"] = self.split_education(condition.get("edu", ""))
+        item["skill"] = [skill.get("description", "") for skill in condition.get("skill", [])]
+        item["specialty_tool"] = [tool.get("description", "") for tool in condition.get("specialty", [])]
+        item["category_name"] = [category.get("description", "") for category in detail.get("jobCategory", [])]
+        item["salary"] = detail.get("salary", "")
+        item["address"] = f"{detail.get('addressRegion', '')}{detail.get('addressDetail', '')}"
+        item["industry"] = job_data.get("industry", "")
 
         yield item
+
+    def split_education(self, education):
+        if not education:
+            return []
+        return [value for value in education.split("、") if value]

@@ -1,4 +1,11 @@
 import tkinter as tk
+import os
+from pathlib import Path
+
+_mpl_config_dir = Path(__file__).resolve().parent.parent / ".cache" / "matplotlib"
+_mpl_config_dir.mkdir(parents=True, exist_ok=True)
+os.environ.setdefault("MPLCONFIGDIR", str(_mpl_config_dir))
+
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg

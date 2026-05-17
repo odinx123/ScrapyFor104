@@ -1,11 +1,14 @@
+from collections import defaultdict
+
 import mysql.connector
 import re
 
 INF = float('inf')
 
 class JobDatabase:
-    def __init__(self, host, username, password, database):
+    def __init__(self, host, username, password, database, port=3306):
         self.host = host
+        self.port = port
         self.username = username
         self.password = password
         self.database = database
@@ -16,6 +19,7 @@ class JobDatabase:
         try:
             conn = mysql.connector.connect(
                 host=self.host,
+                port=self.port,
                 user=self.username,
                 password=self.password,
                 database=self.database
@@ -462,85 +466,137 @@ class JobDatabase:
             print("Connection to MySQL not established.")
     
     def get_jobInfo_by_id(self, job_id):
-        if job_id is 0 or job_id is None:
+        if job_id == 0 or job_id is None:
             return None
-        if self.conn is not None:
-            try:
-                cursor = self.conn.cursor()
-                query = '''
-                    SELECT * FROM job
-                    WHERE job_id = %s
-                '''
-                title = ['job_id', 'job_title', 'company_title', 'min_salary',
-                         'salary_max', 'address', 'industry', 'update_time',
-                        ]
-                job = {}
-                cursor.execute(query, (job_id,))
-                for i, j in zip(title, cursor.fetchone()):
-                    job.update({i: j})
-                if job['salary_max'] == 3.40282e+38:
-                    job['salary_max'] = INF
+        jobs = self.get_jobInfos_by_ids([job_id])
+        return jobs[0] if jobs else None
 
-                # tool
-                query = '''
-                    SELECT specialty_tool FROM Tools
-                    WHERE tool_id IN (
-                        SELECT tool_id FROM Job_Tool
-                        WHERE job_id = %s
-                    )
-                '''
-                cursor.execute(query, (job_id,))
-                tools = [tool[0] for tool in cursor.fetchall()]
-                job.update({'tool': tools})
-                # category
-                query = '''
-                    SELECT category_name FROM Categories
-                    WHERE category_id IN (
-                        SELECT category_id FROM Job_Category
-                        WHERE job_id = %s
-                    )
-                '''
-                cursor.execute(query, (job_id,))
-                categories = [category[0] for category in cursor.fetchall()]
-                job.update({'category': categories})
-                # skill
-                query = '''
-                    SELECT name FROM Skills
-                    WHERE skill_id IN (
-                        SELECT skill_id FROM Job_Skill
-                        WHERE job_id = %s
-                    )
-                '''
-                cursor.execute(query, (job_id,))
-                skills = [skill[0] for skill in cursor.fetchall()]
-                job.update({'skill': skills})
-                # experience
-                query = '''
-                    SELECT experience FROM Experience
-                    WHERE experience_id IN (
-                        SELECT experience_id FROM Job_Experience
-                        WHERE job_id = %s
-                    )
-                '''
-                cursor.execute(query, (job_id,))
-                experiences = [experience[0] for experience in cursor.fetchall()]
-                job.update({'experience': experiences})
-                # education
-                query = '''
-                    SELECT level FROM Education
-                    WHERE education_id IN (
-                        SELECT education_id FROM Job_Education
-                        WHERE job_id = %s
-                    )
-                '''
-                cursor.execute(query, (job_id,))
-                educations = [education[0] for education in cursor.fetchall()]
-                job.update({'education': educations})
-                return job
-            except mysql.connector.Error as e:
-                print("Error retrieving data from MySQL:", e)
-        else:
+    def get_job_count(self):
+        if self.conn is None:
             print("Connection to MySQL not established.")
+            return 0
+
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute("SELECT COUNT(*) FROM job")
+            row = cursor.fetchone()
+            return row[0] if row else 0
+        except mysql.connector.Error as e:
+            print("Error retrieving data from MySQL:", e)
+            return 0
+
+    def get_jobInfos(self, limit=70, offset=0):
+        if self.conn is None:
+            print("Connection to MySQL not established.")
+            return []
+
+        try:
+            cursor = self.conn.cursor()
+            query = '''
+                SELECT job_id
+                FROM job
+                ORDER BY update_time DESC, job_id DESC
+            '''
+            params = []
+
+            if limit is not None:
+                query += ' LIMIT %s'
+                params.append(int(limit))
+                if offset:
+                    query += ' OFFSET %s'
+                    params.append(int(offset))
+
+            cursor.execute(query, tuple(params))
+            return self.get_jobInfos_by_ids([job_id for (job_id,) in cursor.fetchall()])
+        except mysql.connector.Error as e:
+            print("Error retrieving data from MySQL:", e)
+            return []
+
+    def get_jobInfos_by_ids(self, job_ids):
+        job_ids = [job_id for job_id in job_ids if job_id]
+        if not job_ids:
+            return []
+        if self.conn is None:
+            print("Connection to MySQL not established.")
+            return []
+
+        try:
+            cursor = self.conn.cursor()
+            placeholders = ', '.join(['%s'] * len(job_ids))
+            cursor.execute(
+                f'''
+                    SELECT job_id, job_title, company, salary_min, salary_max, address, industry, update_time
+                    FROM job
+                    WHERE job_id IN ({placeholders})
+                ''',
+                tuple(job_ids)
+            )
+
+            jobs_by_id = {}
+            for row in cursor.fetchall():
+                job_id, job_title, company, salary_min, salary_max, address, industry, update_time = row
+                if salary_max == 3.40282e+38:
+                    salary_max = INF
+                jobs_by_id[job_id] = {
+                    'job_id': job_id,
+                    'job_title': job_title,
+                    'company_title': company,
+                    'min_salary': salary_min,
+                    'salary_max': salary_max,
+                    'address': address,
+                    'industry': industry,
+                    'update_time': update_time,
+                    'tool': [],
+                    'category': [],
+                    'skill': [],
+                    'experience': [],
+                    'education': [],
+                }
+
+            if not jobs_by_id:
+                return []
+
+            found_ids = list(jobs_by_id.keys())
+            relation_specs = [
+                ('tool', 'Tools', 'specialty_tool', 'Job_Tool', 'tool_id'),
+                ('category', 'Categories', 'category_name', 'Job_Category', 'category_id'),
+                ('skill', 'Skills', 'name', 'Job_Skill', 'skill_id'),
+                ('experience', 'Experience', 'experience', 'Job_Experience', 'experience_id'),
+                ('education', 'Education', 'level', 'Job_Education', 'education_id'),
+            ]
+
+            for output_key, table, value_column, link_table, id_column in relation_specs:
+                relation_map = self._fetch_relation_map(
+                    cursor,
+                    found_ids,
+                    table,
+                    value_column,
+                    link_table,
+                    id_column,
+                )
+                for job_id, values in relation_map.items():
+                    jobs_by_id[job_id][output_key] = values
+
+            return [jobs_by_id[job_id] for job_id in job_ids if job_id in jobs_by_id]
+        except mysql.connector.Error as e:
+            print("Error retrieving data from MySQL:", e)
+            return []
+
+    def _fetch_relation_map(self, cursor, job_ids, table, value_column, link_table, id_column):
+        placeholders = ', '.join(['%s'] * len(job_ids))
+        cursor.execute(
+            f'''
+                SELECT jt.`job_id`, t.`{value_column}`
+                FROM `{link_table}` jt
+                JOIN `{table}` t ON jt.`{id_column}` = t.`{id_column}`
+                WHERE jt.`job_id` IN ({placeholders})
+            ''',
+            tuple(job_ids)
+        )
+        relation_map = defaultdict(list)
+        for job_id, value in cursor.fetchall():
+            relation_map[job_id].append(value)
+        return relation_map
 
     def get_jobInfo(self, n):
         for i in range(n):
@@ -548,8 +604,10 @@ class JobDatabase:
     
     def get_jobInfo_by_filter(self, category=None, skill=None, education=None, tool=None, experience=None, days=None, min_salary=0, max_salary=INF, limit=None):
         job_ids = self.get_jobs_id_by_filter(category, skill, education, tool, experience, days, min_salary, max_salary, limit)
-        for job_id in job_ids:
-            yield self.get_jobInfo_by_id(job_id[0])
+        if not job_ids:
+            return
+        for job in self.get_jobInfos_by_ids([job_id[0] for job_id in job_ids]):
+            yield job
     
     def get_number_by_filter(self, category=None, skill=None, education=None, tool=None, experience=None, days=None, min_salary=0, max_salary=INF):
         if self.conn is not None:
@@ -695,11 +753,9 @@ class JobDatabase:
 
                 for table in without_underscore:
                     columns = self.get_columns(table)
-                    sql = f"""INSERT IGNORE INTO {table} ({', '.join(columns)})
-                              VALUES
-                              ({', '.join(['%s']*len(columns))})"""
+                    sql = self.build_move_insert_sql(table, columns)
                     
-                    cursor.execute(f"SELECT * FROM {database}.{table}")
+                    cursor.execute(f"SELECT {', '.join(columns)} FROM {database}.{table}")
                     data = cursor.fetchall()
                     
                     for row in data:
@@ -708,11 +764,9 @@ class JobDatabase:
 
                 for table in with_underscore:
                     columns = self.get_columns(table)
-                    sql = f"""INSERT IGNORE INTO {table} ({', '.join(columns)})
-                              VALUES
-                              ({', '.join(['%s']*len(columns))})"""
+                    sql = self.build_move_insert_sql(table, columns)
                     
-                    cursor.execute(f"SELECT * FROM {database}.{table}")
+                    cursor.execute(f"SELECT {', '.join(columns)} FROM {database}.{table}")
                     data = cursor.fetchall()
                     
                     for row in data:
@@ -724,6 +778,16 @@ class JobDatabase:
                 print("Error moving data from MySQL:", e)
         else:
             print("Connection to MySQL not established.")
+
+    def build_move_insert_sql(self, table, columns):
+        quoted_columns = ', '.join(f'`{column}`' for column in columns)
+        placeholders = ', '.join(['%s'] * len(columns))
+        sql = f"INSERT IGNORE INTO `{table}` ({quoted_columns}) VALUES ({placeholders})"
+        if table.lower() == 'job':
+            update_columns = [column for column in columns if column != 'job_id']
+            assignments = ', '.join(f'`{column}` = VALUES(`{column}`)' for column in update_columns)
+            sql = f"INSERT INTO `{table}` ({quoted_columns}) VALUES ({placeholders}) ON DUPLICATE KEY UPDATE {assignments}"
+        return sql
 
     # remove database job104 all table
     def remove_all_table_data(self):
@@ -757,13 +821,10 @@ def conver_salary_to_PythonStyle(salary_min, salary_max):
 # 測試連接與獲取資料
 def main():
     import pprint
+    from app_config import APP_DATABASE, db_config
+
     print('hello world')
-    db = JobDatabase(
-        host="localhost",
-        username="root",
-        password="9879",
-        database="jobDatabase"
-    )
+    db = JobDatabase(**db_config(APP_DATABASE))
 
     print('=============================================')
     print(db.get_number_by_filter(category=None,

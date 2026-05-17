@@ -1,9 +1,12 @@
 CREATE DATABASE `jobDatabase`;
 
-USE `jobDatabase`
+USE `jobDatabase`;
 
 CREATE TABLE `job`(
     `job_id` INT AUTO_INCREMENT,
+    `source_job_key` varchar(32),
+    `source_url` varchar(255),
+    `dedupe_key` char(40),
     `job_title` varchar(50),
     `company` varchar(35),
     `salary_min` INT,
@@ -12,6 +15,8 @@ CREATE TABLE `job`(
     `industry` varchar(20),
     `update_time` DATE,
     PRIMARY KEY(`job_id`),
+    UNIQUE KEY `uq_job_source_key` (`source_job_key`),
+    UNIQUE KEY `uq_job_dedupe_key` (`dedupe_key`),
     UNIQUE(`job_title`, `company`)
 );
 

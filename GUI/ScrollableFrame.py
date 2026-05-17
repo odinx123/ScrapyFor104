@@ -1,5 +1,12 @@
 import tkinter as tk
+import os
+from pathlib import Path
 from tkinter import ttk
+
+_mpl_config_dir = Path(__file__).resolve().parent.parent / ".cache" / "matplotlib"
+_mpl_config_dir.mkdir(parents=True, exist_ok=True)
+os.environ.setdefault("MPLCONFIGDIR", str(_mpl_config_dir))
+
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import Toplevel
@@ -41,6 +48,14 @@ class ScrollableFrame:
         self.canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
     def display_data(self, data_list):
+        if not data_list:
+            ttk.Label(
+                self.scrollable_frame,
+                text='目前沒有資料，請先執行爬蟲或同步資料庫。',
+                font=('Arial', 16, 'bold')
+            ).pack(padx=20, pady=30)
+            return
+
         for i in range(len(data_list)):
             frame = ttk.Frame(self.scrollable_frame, padding="5")
             frame.pack(fill="x", pady=5)

@@ -1,21 +1,9 @@
 from queryData.jobQuery import JobDatabase
+from app_config import APP_DATABASE, CRAWL_DATABASE, db_config
 import os
 
 def main():
-    # SQL_USER = os.environ["USER_NAME"]
-    # SQL_HOST = os.environ["HOST"]
-    # SQL_PASSWORD = os.environ["PASSWD"]
-
-    SQL_USER = 'root'
-    SQL_HOST = 'localhost'
-    SQL_PASSWORD = '9879'
-
-    job104_db = JobDatabase(
-        host=SQL_HOST,
-        username=SQL_USER,
-        password=SQL_PASSWORD,
-        database="job104"
-    )
+    job104_db = JobDatabase(**db_config(CRAWL_DATABASE))
 
     job104_db.remove_all_table_data()
 
@@ -25,14 +13,9 @@ def main():
     os.chdir('..')
     ###############################
 
-    jobDatabase_db = JobDatabase(
-        host=SQL_HOST,
-        username=SQL_USER,
-        password=SQL_PASSWORD,
-        database="jobDatabase"
-    )
+    jobDatabase_db = JobDatabase(**db_config(APP_DATABASE))
 
-    jobDatabase_db.move_data_from("job104")
+    jobDatabase_db.move_data_from(CRAWL_DATABASE)
 
 if __name__ == '__main__':
     main()
